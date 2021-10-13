@@ -1,0 +1,23 @@
+<div [@routerTransition]>
+    <section class="content px-2">
+        <div class="container-fluid">
+            <h2>Defective Products</h2>
+    <div class="row justify-content-end">
+        <div class="col-lg-5 justify-content-end" style="display: inline-flex; align-items: center; margin-right: 9px;">
+            <ng-select name="stage" style="min-width: 200px; margin-right: 10px;" [(ngModel)]="selectedStage">
+                <ng-option [value]="0" [disabled]="true">{{"SelectProduct" | localize}}</ng-option>
+                <ng-option *ngFor="let stage of stages" [value]="stage.id">{{stage.name}}</ng-option>
+             </ng-select>
+             <a type="button" (click)="apply()" class="btn btn-success">{{"Apply" | localize}}</a>
+        </div>
+    </div>
+    <div class="row">
+    <ul class="images">
+        <li *ngFor="let img of imgList; let j=index">
+            <img [src]="img.src" (click)="open(j)" alt="Snow" class="scroll-img">
+        </li>
+      </ul>
+    </div>
+</div>
+    </section>
+</div>

@@ -1,0 +1,50 @@
+.content-area {
+    margin: 0 auto;
+  }
+  
+  .box {
+    background-color: #2B2D3E;
+    padding: 25px 20px;
+  }
+  
+  .shadow {
+    box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  }
+  
+  .sparkboxes .box {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-shadow: 0 1px 1px 1px #666;
+    box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+    position: relative;
+    border-radius: 5px;
+  }
+  
+  .sparkboxes .box .details {
+    position: absolute;
+    color: #fff;
+    transform: scale(0.9) translate(-10px, 5px);
+  }
+  .sparkboxes strong {
+    position: relative;
+    z-index: 3;
+    top: -8px;
+    color: #fff;
+  }
+  
+  
+  .sparkboxes .box1 {
+    background-image: linear-gradient( 135deg, #8fd0ff 10%, #0396FF 100%);
+  }
+  
+  .sparkboxes .box2 {
+    background-image: linear-gradient( 135deg, #6cffce 10%, #2aff58 100%);
+  }
+  
+  .sparkboxes .box3 {
+    background-image: linear-gradient( 135deg, #ffa99a 10%, #ff315d 100%);
+  }
+
+  .apexcharts-tooltip {
+    background: #575757;
+  }

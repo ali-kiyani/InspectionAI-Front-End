@@ -1,0 +1,33 @@
+<section class="content px-2">
+    <div class="container-fluid">
+      <div class="row justify-content-end">
+        <div class="col-lg-5 justify-content-end" style="display: inline-flex; align-items: center; margin-right: 9px;">
+             <ng-select name="duration" style="min-width: 200px; margin-right: 10px;" [(ngModel)]="selectedDuration">
+                <ng-option *ngFor="let duration of durations" [value]="duration.id">{{duration.name}}</ng-option>
+             </ng-select>
+             <a type="button" (click)="apply()" class="btn btn-success">{{"Apply" | localize}}</a>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-lg-12 col-12">
+                <app-product-overview></app-product-overview>
+            </div>
+        </div>
+      <div class="row">
+        <div class="col-lg-4 col-12">
+          <app-product-defects></app-product-defects>
+        </div>
+        <div class="col-lg-8 col-12">
+            <app-product-defect-trend></app-product-defect-trend>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 col-12">
+          <app-product-revenue-lost></app-product-revenue-lost>
+        </div>
+          <div class="col-lg-4 col-12">
+            <app-defective-products></app-defective-products>
+          </div>
+      </div>
+    </div>
+  </section>

@@ -1,0 +1,36 @@
+    <div id="wrapper">
+      <div class="content-area">
+        <div class="container-fluid">
+          <div class="main">
+            <div class="row sparkboxes mt-2">
+              <div class="col-md-4">
+                <div class="box box1">
+                  <div class="details">
+                    <h1 style="margin-bottom: -3px;"><b>{{ insights.totalDetections }}</b></h1>
+                    <h4>{{ "SCANS" | localize }}</h4>
+                  </div>
+                  <div id="spark1"></div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="box box2">
+                  <div class="details">
+                    <h1 style="margin-bottom: -3px;"><b>{{ insights.totalGood }}</b></h1>
+                    <h4>{{ "GOOD" | localize }}</h4>
+                  </div>
+                  <div id="spark2"></div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="box box3">
+                  <div class="details">
+                    <h1 style="margin-bottom: -3px;"><b>{{ insights.totalDefects }}</b></h1>
+                    <h4>{{ "DEFECTS" | localize }}</h4>
+                  </div>
+                  <div id="spark3"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>

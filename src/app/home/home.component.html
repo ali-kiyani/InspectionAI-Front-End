@@ -1,0 +1,10 @@
+﻿<div [@routerTransition]>
+  <tabset>
+    <tab [heading]="'OverView' | localize" class="pt-3 px-2">
+      <app-bird-eye-dashboard></app-bird-eye-dashboard>
+    </tab>
+    <tab [heading]="'Detailed' | localize" class="pt-3 px-2">
+      <app-detailed-dashboard></app-detailed-dashboard>
+    </tab>
+  </tabset>
+</div>
