@@ -2,7 +2,7 @@
     <div class="container-fluid">
       <div class="row justify-content-end">
         <div class="col-lg-5 justify-content-end" style="display: inline-flex; align-items: center; margin-right: 9px;">
-          <ng-select name="product" style="min-width: 200px; margin-right: 10px;" [(ngModel)]="selectedProduct">
+          <ng-select name="product" style="min-width: 200px; margin-right: 10px;" (change)="productChanged($event)" [(ngModel)]="selectedProduct">
             <ng-option [value]="0" [disabled]="true">{{"SelectProduct" | localize}}</ng-option>
             <ng-option *ngFor="let product of products" [value]="product.id">{{product.name}}</ng-option>
          </ng-select>

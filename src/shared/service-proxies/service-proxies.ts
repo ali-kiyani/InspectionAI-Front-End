@@ -550,7 +550,7 @@ export class ConfigurationServiceProxy {
 }
 
 @Injectable()
-export class HomeServiceProxy {
+export class DetailedDashboardServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -564,12 +564,13 @@ export class HomeServiceProxy {
      * @param duration (optional) 
      * @param productId (optional) 
      * @param stageId (optional) 
-     * @param type (optional) 
      * @return Success
      */
-    getGeneralInsights(duration: string | null | undefined, productId: number | undefined, stageId: number | undefined, type: number | undefined): Observable<GeneralInsightsDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetGeneralInsights?";
-        if (duration !== undefined && duration !== null)
+    getGeneralInsights(duration: string | undefined, productId: number | undefined, stageId: number | undefined): Observable<DetailedGeneralInsightsDto> {
+        let url_ = this.baseUrl + "/api/services/app/DetailedDashboard/GetGeneralInsights?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
             url_ += "duration=" + encodeURIComponent("" + duration) + "&";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -579,10 +580,6 @@ export class HomeServiceProxy {
             throw new Error("The parameter 'stageId' cannot be null.");
         else if (stageId !== undefined)
             url_ += "stageId=" + encodeURIComponent("" + stageId) + "&";
-        if (type === null)
-            throw new Error("The parameter 'type' cannot be null.");
-        else if (type !== undefined)
-            url_ += "type=" + encodeURIComponent("" + type) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -600,14 +597,14 @@ export class HomeServiceProxy {
                 try {
                     return this.processGetGeneralInsights(<any>response_);
                 } catch (e) {
-                    return <Observable<GeneralInsightsDto>><any>_observableThrow(e);
+                    return <Observable<DetailedGeneralInsightsDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<GeneralInsightsDto>><any>_observableThrow(response_);
+                return <Observable<DetailedGeneralInsightsDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetGeneralInsights(response: HttpResponseBase): Observable<GeneralInsightsDto> {
+    protected processGetGeneralInsights(response: HttpResponseBase): Observable<DetailedGeneralInsightsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -618,7 +615,7 @@ export class HomeServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GeneralInsightsDto.fromJS(resultData200);
+            result200 = DetailedGeneralInsightsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -626,235 +623,20 @@ export class HomeServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<GeneralInsightsDto>(<any>null);
-    }
-
-    /**
-     * @param duration (optional) 
-     * @return Success
-     */
-    getProductRevenueLoss(duration: string | null | undefined): Observable<RevenueLossDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetProductRevenueLoss?";
-        if (duration !== undefined && duration !== null)
-            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductRevenueLoss(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetProductRevenueLoss(<any>response_);
-                } catch (e) {
-                    return <Observable<RevenueLossDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<RevenueLossDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetProductRevenueLoss(response: HttpResponseBase): Observable<RevenueLossDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RevenueLossDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<RevenueLossDto>(<any>null);
-    }
-
-    /**
-     * @param duration (optional) 
-     * @return Success
-     */
-    getProductDefectRatio(duration: string | null | undefined): Observable<ProductDefectRatioDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetProductDefectRatio?";
-        if (duration !== undefined && duration !== null)
-            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductDefectRatio(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetProductDefectRatio(<any>response_);
-                } catch (e) {
-                    return <Observable<ProductDefectRatioDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ProductDefectRatioDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetProductDefectRatio(response: HttpResponseBase): Observable<ProductDefectRatioDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ProductDefectRatioDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ProductDefectRatioDto>(<any>null);
-    }
-
-    /**
-     * @param duration (optional) 
-     * @return Success
-     */
-    getDefectiveProducts(duration: string | null | undefined): Observable<DefectiveRatio> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetDefectiveProducts?";
-        if (duration !== undefined && duration !== null)
-            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetDefectiveProducts(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetDefectiveProducts(<any>response_);
-                } catch (e) {
-                    return <Observable<DefectiveRatio>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<DefectiveRatio>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetDefectiveProducts(response: HttpResponseBase): Observable<DefectiveRatio> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DefectiveRatio.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<DefectiveRatio>(<any>null);
-    }
-
-    /**
-     * @param duration (optional) 
-     * @return Success
-     */
-    getProductDefectTrend(duration: string | null | undefined): Observable<ProductDefectTrendDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetProductDefectTrend?";
-        if (duration !== undefined && duration !== null)
-            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductDefectTrend(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetProductDefectTrend(<any>response_);
-                } catch (e) {
-                    return <Observable<ProductDefectTrendDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ProductDefectTrendDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetProductDefectTrend(response: HttpResponseBase): Observable<ProductDefectTrendDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ProductDefectTrendDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ProductDefectTrendDto>(<any>null);
+        return _observableOf<DetailedGeneralInsightsDto>(<any>null);
     }
 
     /**
      * @param duration (optional) 
      * @param productId (optional) 
      * @param stageId (optional) 
-     * @param type (optional) 
      * @return Success
      */
-    getDefectTrend(duration: string | null | undefined, productId: number | undefined, stageId: number | undefined, type: number | undefined): Observable<DefectTrendDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetDefectTrend?";
-        if (duration !== undefined && duration !== null)
+    getDefectTrend(duration: string | undefined, productId: number | undefined, stageId: number | undefined): Observable<DetailedDefectTrendDto> {
+        let url_ = this.baseUrl + "/api/services/app/DetailedDashboard/GetDefectTrend?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
             url_ += "duration=" + encodeURIComponent("" + duration) + "&";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -864,10 +646,6 @@ export class HomeServiceProxy {
             throw new Error("The parameter 'stageId' cannot be null.");
         else if (stageId !== undefined)
             url_ += "stageId=" + encodeURIComponent("" + stageId) + "&";
-        if (type === null)
-            throw new Error("The parameter 'type' cannot be null.");
-        else if (type !== undefined)
-            url_ += "type=" + encodeURIComponent("" + type) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -885,14 +663,14 @@ export class HomeServiceProxy {
                 try {
                     return this.processGetDefectTrend(<any>response_);
                 } catch (e) {
-                    return <Observable<DefectTrendDto>><any>_observableThrow(e);
+                    return <Observable<DetailedDefectTrendDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<DefectTrendDto>><any>_observableThrow(response_);
+                return <Observable<DetailedDefectTrendDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetDefectTrend(response: HttpResponseBase): Observable<DefectTrendDto> {
+    protected processGetDefectTrend(response: HttpResponseBase): Observable<DetailedDefectTrendDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -903,7 +681,7 @@ export class HomeServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DefectTrendDto.fromJS(resultData200);
+            result200 = DetailedDefectTrendDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -911,7 +689,7 @@ export class HomeServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<DefectTrendDto>(<any>null);
+        return _observableOf<DetailedDefectTrendDto>(<any>null);
     }
 
     /**
@@ -920,9 +698,11 @@ export class HomeServiceProxy {
      * @param stageId (optional) 
      * @return Success
      */
-    getRevenueLoss(duration: string | null | undefined, productId: number | undefined, stageId: number | undefined): Observable<RevenueLossDto> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetRevenueLoss?";
-        if (duration !== undefined && duration !== null)
+    getRevenueLoss(duration: string | undefined, productId: number | undefined, stageId: number | undefined): Observable<DetailedRevenueLossDto> {
+        let url_ = this.baseUrl + "/api/services/app/DetailedDashboard/GetRevenueLoss?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
             url_ += "duration=" + encodeURIComponent("" + duration) + "&";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -949,14 +729,14 @@ export class HomeServiceProxy {
                 try {
                     return this.processGetRevenueLoss(<any>response_);
                 } catch (e) {
-                    return <Observable<RevenueLossDto>><any>_observableThrow(e);
+                    return <Observable<DetailedRevenueLossDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<RevenueLossDto>><any>_observableThrow(response_);
+                return <Observable<DetailedRevenueLossDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetRevenueLoss(response: HttpResponseBase): Observable<RevenueLossDto> {
+    protected processGetRevenueLoss(response: HttpResponseBase): Observable<DetailedRevenueLossDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -967,7 +747,7 @@ export class HomeServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RevenueLossDto.fromJS(resultData200);
+            result200 = DetailedRevenueLossDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -975,7 +755,7 @@ export class HomeServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<RevenueLossDto>(<any>null);
+        return _observableOf<DetailedRevenueLossDto>(<any>null);
     }
 
     /**
@@ -984,9 +764,11 @@ export class HomeServiceProxy {
      * @param stageId (optional) 
      * @return Success
      */
-    getAssemblyDefects(duration: string | null | undefined, productId: number | undefined, stageId: number | undefined): Observable<AssemblyDefects> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetAssemblyDefects?";
-        if (duration !== undefined && duration !== null)
+    getAssemblyDefects(duration: string | undefined, productId: number | undefined, stageId: number | undefined): Observable<DetailedAssemblyDefects> {
+        let url_ = this.baseUrl + "/api/services/app/DetailedDashboard/GetAssemblyDefects?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
             url_ += "duration=" + encodeURIComponent("" + duration) + "&";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -1013,14 +795,14 @@ export class HomeServiceProxy {
                 try {
                     return this.processGetAssemblyDefects(<any>response_);
                 } catch (e) {
-                    return <Observable<AssemblyDefects>><any>_observableThrow(e);
+                    return <Observable<DetailedAssemblyDefects>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<AssemblyDefects>><any>_observableThrow(response_);
+                return <Observable<DetailedAssemblyDefects>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAssemblyDefects(response: HttpResponseBase): Observable<AssemblyDefects> {
+    protected processGetAssemblyDefects(response: HttpResponseBase): Observable<DetailedAssemblyDefects> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1031,7 +813,7 @@ export class HomeServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssemblyDefects.fromJS(resultData200);
+            result200 = DetailedAssemblyDefects.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1039,19 +821,20 @@ export class HomeServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<AssemblyDefects>(<any>null);
+        return _observableOf<DetailedAssemblyDefects>(<any>null);
     }
 
     /**
      * @param duration (optional) 
      * @param productId (optional) 
      * @param stageId (optional) 
-     * @param type (optional) 
      * @return Success
      */
-    getDefectiveRatio(duration: string | null | undefined, productId: number | undefined, stageId: number | undefined, type: number | undefined): Observable<DefectiveRatio> {
-        let url_ = this.baseUrl + "/api/services/app/Home/GetDefectiveRatio?";
-        if (duration !== undefined && duration !== null)
+    getDefectiveRatio(duration: string | undefined, productId: number | undefined, stageId: number | undefined): Observable<DetailedDefectiveRatio> {
+        let url_ = this.baseUrl + "/api/services/app/DetailedDashboard/GetDefectiveRatio?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
             url_ += "duration=" + encodeURIComponent("" + duration) + "&";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -1061,10 +844,6 @@ export class HomeServiceProxy {
             throw new Error("The parameter 'stageId' cannot be null.");
         else if (stageId !== undefined)
             url_ += "stageId=" + encodeURIComponent("" + stageId) + "&";
-        if (type === null)
-            throw new Error("The parameter 'type' cannot be null.");
-        else if (type !== undefined)
-            url_ += "type=" + encodeURIComponent("" + type) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1082,14 +861,14 @@ export class HomeServiceProxy {
                 try {
                     return this.processGetDefectiveRatio(<any>response_);
                 } catch (e) {
-                    return <Observable<DefectiveRatio>><any>_observableThrow(e);
+                    return <Observable<DetailedDefectiveRatio>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<DefectiveRatio>><any>_observableThrow(response_);
+                return <Observable<DetailedDefectiveRatio>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetDefectiveRatio(response: HttpResponseBase): Observable<DefectiveRatio> {
+    protected processGetDefectiveRatio(response: HttpResponseBase): Observable<DetailedDefectiveRatio> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1100,7 +879,7 @@ export class HomeServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DefectiveRatio.fromJS(resultData200);
+            result200 = DetailedDefectiveRatio.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1108,7 +887,366 @@ export class HomeServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<DefectiveRatio>(<any>null);
+        return _observableOf<DetailedDefectiveRatio>(<any>null);
+    }
+}
+
+@Injectable()
+export class OverviewDashboardServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param step (optional) 
+     * @param perDayCount (optional) 
+     * @param from (optional) 
+     * @param to (optional) 
+     * @return Success
+     */
+    fillData(step: number | undefined, perDayCount: number | undefined, from: moment.Moment | undefined, to: moment.Moment | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/FillData?";
+        if (step === null)
+            throw new Error("The parameter 'step' cannot be null.");
+        else if (step !== undefined)
+            url_ += "step=" + encodeURIComponent("" + step) + "&";
+        if (perDayCount === null)
+            throw new Error("The parameter 'perDayCount' cannot be null.");
+        else if (perDayCount !== undefined)
+            url_ += "perDayCount=" + encodeURIComponent("" + perDayCount) + "&";
+        if (from === null)
+            throw new Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toJSON() : "") + "&";
+        if (to === null)
+            throw new Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toJSON() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillData(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processFillData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param duration (optional) 
+     * @return Success
+     */
+    getGeneralInsights(duration: string | undefined): Observable<OverviewGeneralInsightsDto> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/GetGeneralInsights?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
+            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetGeneralInsights(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetGeneralInsights(<any>response_);
+                } catch (e) {
+                    return <Observable<OverviewGeneralInsightsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OverviewGeneralInsightsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetGeneralInsights(response: HttpResponseBase): Observable<OverviewGeneralInsightsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OverviewGeneralInsightsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OverviewGeneralInsightsDto>(<any>null);
+    }
+
+    /**
+     * @param duration (optional) 
+     * @return Success
+     */
+    getProductRevenueLoss(duration: string | undefined): Observable<OverviewRevenueLossDto> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/GetProductRevenueLoss?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
+            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductRevenueLoss(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductRevenueLoss(<any>response_);
+                } catch (e) {
+                    return <Observable<OverviewRevenueLossDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OverviewRevenueLossDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProductRevenueLoss(response: HttpResponseBase): Observable<OverviewRevenueLossDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OverviewRevenueLossDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OverviewRevenueLossDto>(<any>null);
+    }
+
+    /**
+     * @param duration (optional) 
+     * @return Success
+     */
+    getProductDefectRatio(duration: string | undefined): Observable<OverviewDefectRatioDto> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/GetProductDefectRatio?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
+            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductDefectRatio(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductDefectRatio(<any>response_);
+                } catch (e) {
+                    return <Observable<OverviewDefectRatioDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OverviewDefectRatioDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProductDefectRatio(response: HttpResponseBase): Observable<OverviewDefectRatioDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OverviewDefectRatioDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OverviewDefectRatioDto>(<any>null);
+    }
+
+    /**
+     * @param duration (optional) 
+     * @return Success
+     */
+    getDefectiveProducts(duration: string | undefined): Observable<OverviewDefectiveRatio> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/GetDefectiveProducts?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
+            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetDefectiveProducts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetDefectiveProducts(<any>response_);
+                } catch (e) {
+                    return <Observable<OverviewDefectiveRatio>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OverviewDefectiveRatio>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetDefectiveProducts(response: HttpResponseBase): Observable<OverviewDefectiveRatio> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OverviewDefectiveRatio.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OverviewDefectiveRatio>(<any>null);
+    }
+
+    /**
+     * @param duration (optional) 
+     * @return Success
+     */
+    getProductDefectTrend(duration: string | undefined): Observable<OverviewDefectTrendDto> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/GetProductDefectTrend?";
+        if (duration === null)
+            throw new Error("The parameter 'duration' cannot be null.");
+        else if (duration !== undefined)
+            url_ += "duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductDefectTrend(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductDefectTrend(<any>response_);
+                } catch (e) {
+                    return <Observable<OverviewDefectTrendDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OverviewDefectTrendDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProductDefectTrend(response: HttpResponseBase): Observable<OverviewDefectTrendDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OverviewDefectTrendDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OverviewDefectTrendDto>(<any>null);
     }
 }
 
@@ -1246,9 +1384,11 @@ export class RoleServiceProxy {
      * @param permission (optional) 
      * @return Success
      */
-    getRoles(permission: string | null | undefined): Observable<RoleListDtoListResultDto> {
+    getRoles(permission: string | undefined): Observable<RoleListDtoListResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Role/GetRoles?";
-        if (permission !== undefined && permission !== null)
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
             url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1573,9 +1713,11 @@ export class RoleServiceProxy {
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<RoleDtoPagedResultDto> {
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<RoleDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Role/GetAll?";
-        if (keyword !== undefined && keyword !== null)
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
@@ -1996,11 +2138,15 @@ export class TenantServiceProxy {
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getAll(keyword: string | null | undefined, isActive: boolean | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<TenantDtoPagedResultDto> {
+    getAll(keyword: string | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<TenantDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Tenant/GetAll?";
-        if (keyword !== undefined && keyword !== null)
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-        if (isActive !== undefined && isActive !== null)
+        if (isActive === null)
+            throw new Error("The parameter 'isActive' cannot be null.");
+        else if (isActive !== undefined)
             url_ += "IsActive=" + encodeURIComponent("" + isActive) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
@@ -2849,11 +2995,15 @@ export class UserServiceProxy {
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getAll(keyword: string | null | undefined, isActive: boolean | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserDtoPagedResultDto> {
+    getAll(keyword: string | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/User/GetAll?";
-        if (keyword !== undefined && keyword !== null)
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
             url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-        if (isActive !== undefined && isActive !== null)
+        if (isActive === null)
+            throw new Error("The parameter 'isActive' cannot be null.");
+        else if (isActive !== undefined)
             url_ += "IsActive=" + encodeURIComponent("" + isActive) + "&";
         if (skipCount === null)
             throw new Error("The parameter 'skipCount' cannot be null.");
@@ -2908,1909 +3058,6 @@ export class UserServiceProxy {
         }
         return _observableOf<UserDtoPagedResultDto>(<any>null);
     }
-}
-
-export class IsTenantAvailableInput implements IIsTenantAvailableInput {
-    tenancyName: string;
-
-    constructor(data?: IIsTenantAvailableInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.tenancyName = _data["tenancyName"];
-        }
-    }
-
-    static fromJS(data: any): IsTenantAvailableInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new IsTenantAvailableInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenancyName"] = this.tenancyName;
-        return data; 
-    }
-
-    clone(): IsTenantAvailableInput {
-        const json = this.toJSON();
-        let result = new IsTenantAvailableInput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IIsTenantAvailableInput {
-    tenancyName: string;
-}
-
-export enum TenantAvailabilityState {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-}
-
-export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
-    state: TenantAvailabilityState;
-    tenantId: number | undefined;
-
-    constructor(data?: IIsTenantAvailableOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.state = _data["state"];
-            this.tenantId = _data["tenantId"];
-        }
-    }
-
-    static fromJS(data: any): IsTenantAvailableOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new IsTenantAvailableOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["state"] = this.state;
-        data["tenantId"] = this.tenantId;
-        return data; 
-    }
-
-    clone(): IsTenantAvailableOutput {
-        const json = this.toJSON();
-        let result = new IsTenantAvailableOutput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IIsTenantAvailableOutput {
-    state: TenantAvailabilityState;
-    tenantId: number | undefined;
-}
-
-export class RegisterInput implements IRegisterInput {
-    name: string;
-    surname: string;
-    userName: string;
-    emailAddress: string;
-    password: string;
-    captchaResponse: string | undefined;
-
-    constructor(data?: IRegisterInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.surname = _data["surname"];
-            this.userName = _data["userName"];
-            this.emailAddress = _data["emailAddress"];
-            this.password = _data["password"];
-            this.captchaResponse = _data["captchaResponse"];
-        }
-    }
-
-    static fromJS(data: any): RegisterInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisterInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["surname"] = this.surname;
-        data["userName"] = this.userName;
-        data["emailAddress"] = this.emailAddress;
-        data["password"] = this.password;
-        data["captchaResponse"] = this.captchaResponse;
-        return data; 
-    }
-
-    clone(): RegisterInput {
-        const json = this.toJSON();
-        let result = new RegisterInput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRegisterInput {
-    name: string;
-    surname: string;
-    userName: string;
-    emailAddress: string;
-    password: string;
-    captchaResponse: string | undefined;
-}
-
-export class RegisterOutput implements IRegisterOutput {
-    canLogin: boolean;
-
-    constructor(data?: IRegisterOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canLogin = _data["canLogin"];
-        }
-    }
-
-    static fromJS(data: any): RegisterOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisterOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canLogin"] = this.canLogin;
-        return data; 
-    }
-
-    clone(): RegisterOutput {
-        const json = this.toJSON();
-        let result = new RegisterOutput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRegisterOutput {
-    canLogin: boolean;
-}
-
-export class AssemblyDefectsDto implements IAssemblyDefectsDto {
-    assemblyDetectionId: number;
-    defectId: number;
-    confidence: number;
-    imageUrl: string | undefined;
-    id: number;
-
-    constructor(data?: IAssemblyDefectsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.assemblyDetectionId = _data["assemblyDetectionId"];
-            this.defectId = _data["defectId"];
-            this.confidence = _data["confidence"];
-            this.imageUrl = _data["imageUrl"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): AssemblyDefectsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AssemblyDefectsDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["assemblyDetectionId"] = this.assemblyDetectionId;
-        data["defectId"] = this.defectId;
-        data["confidence"] = this.confidence;
-        data["imageUrl"] = this.imageUrl;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): AssemblyDefectsDto {
-        const json = this.toJSON();
-        let result = new AssemblyDefectsDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAssemblyDefectsDto {
-    assemblyDetectionId: number;
-    defectId: number;
-    confidence: number;
-    imageUrl: string | undefined;
-    id: number;
-}
-
-export class CreateAssemblyDetectionDto implements ICreateAssemblyDetectionDto {
-    assemblyLineId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-
-    constructor(data?: ICreateAssemblyDetectionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.assemblyLineId = _data["assemblyLineId"];
-            this.stageId = _data["stageId"];
-            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
-            if (Array.isArray(_data["assemblyDefects"])) {
-                this.assemblyDefects = [] as any;
-                for (let item of _data["assemblyDefects"])
-                    this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateAssemblyDetectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateAssemblyDetectionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["assemblyLineId"] = this.assemblyLineId;
-        data["stageId"] = this.stageId;
-        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
-        if (Array.isArray(this.assemblyDefects)) {
-            data["assemblyDefects"] = [];
-            for (let item of this.assemblyDefects)
-                data["assemblyDefects"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): CreateAssemblyDetectionDto {
-        const json = this.toJSON();
-        let result = new CreateAssemblyDetectionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateAssemblyDetectionDto {
-    assemblyLineId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-}
-
-export class AssemblyDetectionDto implements IAssemblyDetectionDto {
-    assemblyLineId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-    id: number;
-
-    constructor(data?: IAssemblyDetectionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.assemblyLineId = _data["assemblyLineId"];
-            this.stageId = _data["stageId"];
-            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
-            if (Array.isArray(_data["assemblyDefects"])) {
-                this.assemblyDefects = [] as any;
-                for (let item of _data["assemblyDefects"])
-                    this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
-            }
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): AssemblyDetectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AssemblyDetectionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["assemblyLineId"] = this.assemblyLineId;
-        data["stageId"] = this.stageId;
-        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
-        if (Array.isArray(this.assemblyDefects)) {
-            data["assemblyDefects"] = [];
-            for (let item of this.assemblyDefects)
-                data["assemblyDefects"].push(item.toJSON());
-        }
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): AssemblyDetectionDto {
-        const json = this.toJSON();
-        let result = new AssemblyDetectionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAssemblyDetectionDto {
-    assemblyLineId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-    id: number;
-}
-
-export class AssemblyDetectionDtoPagedResultDto implements IAssemblyDetectionDtoPagedResultDto {
-    totalCount: number;
-    items: AssemblyDetectionDto[] | undefined;
-
-    constructor(data?: IAssemblyDetectionDtoPagedResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(AssemblyDetectionDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): AssemblyDetectionDtoPagedResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AssemblyDetectionDtoPagedResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): AssemblyDetectionDtoPagedResultDto {
-        const json = this.toJSON();
-        let result = new AssemblyDetectionDtoPagedResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAssemblyDetectionDtoPagedResultDto {
-    totalCount: number;
-    items: AssemblyDetectionDto[] | undefined;
-}
-
-export class ChangeUiThemeInput implements IChangeUiThemeInput {
-    theme: string;
-
-    constructor(data?: IChangeUiThemeInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.theme = _data["theme"];
-        }
-    }
-
-    static fromJS(data: any): ChangeUiThemeInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChangeUiThemeInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["theme"] = this.theme;
-        return data; 
-    }
-
-    clone(): ChangeUiThemeInput {
-        const json = this.toJSON();
-        let result = new ChangeUiThemeInput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IChangeUiThemeInput {
-    theme: string;
-}
-
-export class GeneralInsightsDto implements IGeneralInsightsDto {
-    totalDetections: number;
-    totalDefects: number;
-    totalGood: number;
-    labels: moment.Moment[] | undefined;
-    detections: number[] | undefined;
-    defects: number[] | undefined;
-    good: number[] | undefined;
-
-    constructor(data?: IGeneralInsightsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.totalDetections = _data["totalDetections"];
-            this.totalDefects = _data["totalDefects"];
-            this.totalGood = _data["totalGood"];
-            if (Array.isArray(_data["labels"])) {
-                this.labels = [] as any;
-                for (let item of _data["labels"])
-                    this.labels.push(moment(item));
-            }
-            if (Array.isArray(_data["detections"])) {
-                this.detections = [] as any;
-                for (let item of _data["detections"])
-                    this.detections.push(item);
-            }
-            if (Array.isArray(_data["defects"])) {
-                this.defects = [] as any;
-                for (let item of _data["defects"])
-                    this.defects.push(item);
-            }
-            if (Array.isArray(_data["good"])) {
-                this.good = [] as any;
-                for (let item of _data["good"])
-                    this.good.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): GeneralInsightsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GeneralInsightsDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalDetections"] = this.totalDetections;
-        data["totalDefects"] = this.totalDefects;
-        data["totalGood"] = this.totalGood;
-        if (Array.isArray(this.labels)) {
-            data["labels"] = [];
-            for (let item of this.labels)
-                data["labels"].push(item.toISOString());
-        }
-        if (Array.isArray(this.detections)) {
-            data["detections"] = [];
-            for (let item of this.detections)
-                data["detections"].push(item);
-        }
-        if (Array.isArray(this.defects)) {
-            data["defects"] = [];
-            for (let item of this.defects)
-                data["defects"].push(item);
-        }
-        if (Array.isArray(this.good)) {
-            data["good"] = [];
-            for (let item of this.good)
-                data["good"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): GeneralInsightsDto {
-        const json = this.toJSON();
-        let result = new GeneralInsightsDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGeneralInsightsDto {
-    totalDetections: number;
-    totalDefects: number;
-    totalGood: number;
-    labels: moment.Moment[] | undefined;
-    detections: number[] | undefined;
-    defects: number[] | undefined;
-    good: number[] | undefined;
-}
-
-export class RevenueLossDataDto implements IRevenueLossDataDto {
-    name: string | undefined;
-    id: number;
-    data: number[] | undefined;
-
-    constructor(data?: IRevenueLossDataDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.id = _data["id"];
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): RevenueLossDataDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RevenueLossDataDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["id"] = this.id;
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): RevenueLossDataDto {
-        const json = this.toJSON();
-        let result = new RevenueLossDataDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRevenueLossDataDto {
-    name: string | undefined;
-    id: number;
-    data: number[] | undefined;
-}
-
-export class RevenueLossDto implements IRevenueLossDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: RevenueLossDataDto[] | undefined;
-
-    constructor(data?: IRevenueLossDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["labels"])) {
-                this.labels = [] as any;
-                for (let item of _data["labels"])
-                    this.labels.push(moment(item));
-            }
-            if (Array.isArray(_data["all"])) {
-                this.all = [] as any;
-                for (let item of _data["all"])
-                    this.all.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(RevenueLossDataDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): RevenueLossDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RevenueLossDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.labels)) {
-            data["labels"] = [];
-            for (let item of this.labels)
-                data["labels"].push(item.toISOString());
-        }
-        if (Array.isArray(this.all)) {
-            data["all"] = [];
-            for (let item of this.all)
-                data["all"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): RevenueLossDto {
-        const json = this.toJSON();
-        let result = new RevenueLossDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRevenueLossDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: RevenueLossDataDto[] | undefined;
-}
-
-export class ProductDefectRatioDto implements IProductDefectRatioDto {
-    ids: number[] | undefined;
-    name: string[] | undefined;
-    defects: number[] | undefined;
-    good: number[] | undefined;
-
-    constructor(data?: IProductDefectRatioDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["ids"])) {
-                this.ids = [] as any;
-                for (let item of _data["ids"])
-                    this.ids.push(item);
-            }
-            if (Array.isArray(_data["name"])) {
-                this.name = [] as any;
-                for (let item of _data["name"])
-                    this.name.push(item);
-            }
-            if (Array.isArray(_data["defects"])) {
-                this.defects = [] as any;
-                for (let item of _data["defects"])
-                    this.defects.push(item);
-            }
-            if (Array.isArray(_data["good"])) {
-                this.good = [] as any;
-                for (let item of _data["good"])
-                    this.good.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): ProductDefectRatioDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductDefectRatioDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.ids)) {
-            data["ids"] = [];
-            for (let item of this.ids)
-                data["ids"].push(item);
-        }
-        if (Array.isArray(this.name)) {
-            data["name"] = [];
-            for (let item of this.name)
-                data["name"].push(item);
-        }
-        if (Array.isArray(this.defects)) {
-            data["defects"] = [];
-            for (let item of this.defects)
-                data["defects"].push(item);
-        }
-        if (Array.isArray(this.good)) {
-            data["good"] = [];
-            for (let item of this.good)
-                data["good"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): ProductDefectRatioDto {
-        const json = this.toJSON();
-        let result = new ProductDefectRatioDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IProductDefectRatioDto {
-    ids: number[] | undefined;
-    name: string[] | undefined;
-    defects: number[] | undefined;
-    good: number[] | undefined;
-}
-
-export class DefectiveRatio implements IDefectiveRatio {
-    names: string[] | undefined;
-    count: number[] | undefined;
-
-    constructor(data?: IDefectiveRatio) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["names"])) {
-                this.names = [] as any;
-                for (let item of _data["names"])
-                    this.names.push(item);
-            }
-            if (Array.isArray(_data["count"])) {
-                this.count = [] as any;
-                for (let item of _data["count"])
-                    this.count.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DefectiveRatio {
-        data = typeof data === 'object' ? data : {};
-        let result = new DefectiveRatio();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.names)) {
-            data["names"] = [];
-            for (let item of this.names)
-                data["names"].push(item);
-        }
-        if (Array.isArray(this.count)) {
-            data["count"] = [];
-            for (let item of this.count)
-                data["count"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): DefectiveRatio {
-        const json = this.toJSON();
-        let result = new DefectiveRatio();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IDefectiveRatio {
-    names: string[] | undefined;
-    count: number[] | undefined;
-}
-
-export class ProductDefectTrendDataDto implements IProductDefectTrendDataDto {
-    name: string | undefined;
-    id: number;
-    data: number[] | undefined;
-
-    constructor(data?: IProductDefectTrendDataDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.id = _data["id"];
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): ProductDefectTrendDataDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductDefectTrendDataDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["id"] = this.id;
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): ProductDefectTrendDataDto {
-        const json = this.toJSON();
-        let result = new ProductDefectTrendDataDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IProductDefectTrendDataDto {
-    name: string | undefined;
-    id: number;
-    data: number[] | undefined;
-}
-
-export class ProductDefectTrendDto implements IProductDefectTrendDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: ProductDefectTrendDataDto[] | undefined;
-
-    constructor(data?: IProductDefectTrendDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["labels"])) {
-                this.labels = [] as any;
-                for (let item of _data["labels"])
-                    this.labels.push(moment(item));
-            }
-            if (Array.isArray(_data["all"])) {
-                this.all = [] as any;
-                for (let item of _data["all"])
-                    this.all.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(ProductDefectTrendDataDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ProductDefectTrendDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductDefectTrendDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.labels)) {
-            data["labels"] = [];
-            for (let item of this.labels)
-                data["labels"].push(item.toISOString());
-        }
-        if (Array.isArray(this.all)) {
-            data["all"] = [];
-            for (let item of this.all)
-                data["all"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): ProductDefectTrendDto {
-        const json = this.toJSON();
-        let result = new ProductDefectTrendDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IProductDefectTrendDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: ProductDefectTrendDataDto[] | undefined;
-}
-
-export class DefectTrendDataDto implements IDefectTrendDataDto {
-    name: string | undefined;
-    defectId: number;
-    data: number[] | undefined;
-
-    constructor(data?: IDefectTrendDataDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.defectId = _data["defectId"];
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DefectTrendDataDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new DefectTrendDataDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["defectId"] = this.defectId;
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): DefectTrendDataDto {
-        const json = this.toJSON();
-        let result = new DefectTrendDataDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IDefectTrendDataDto {
-    name: string | undefined;
-    defectId: number;
-    data: number[] | undefined;
-}
-
-export class DefectTrendDto implements IDefectTrendDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: DefectTrendDataDto[] | undefined;
-
-    constructor(data?: IDefectTrendDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["labels"])) {
-                this.labels = [] as any;
-                for (let item of _data["labels"])
-                    this.labels.push(moment(item));
-            }
-            if (Array.isArray(_data["all"])) {
-                this.all = [] as any;
-                for (let item of _data["all"])
-                    this.all.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data.push(DefectTrendDataDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): DefectTrendDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new DefectTrendDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.labels)) {
-            data["labels"] = [];
-            for (let item of this.labels)
-                data["labels"].push(item.toISOString());
-        }
-        if (Array.isArray(this.all)) {
-            data["all"] = [];
-            for (let item of this.all)
-                data["all"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): DefectTrendDto {
-        const json = this.toJSON();
-        let result = new DefectTrendDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IDefectTrendDto {
-    labels: moment.Moment[] | undefined;
-    all: number[] | undefined;
-    data: DefectTrendDataDto[] | undefined;
-}
-
-export class AssemblyDefects implements IAssemblyDefects {
-    assemblyNames: string[] | undefined;
-    assemblyId: number[] | undefined;
-    assemblyDefectsCount: number[] | undefined;
-
-    constructor(data?: IAssemblyDefects) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["assemblyNames"])) {
-                this.assemblyNames = [] as any;
-                for (let item of _data["assemblyNames"])
-                    this.assemblyNames.push(item);
-            }
-            if (Array.isArray(_data["assemblyId"])) {
-                this.assemblyId = [] as any;
-                for (let item of _data["assemblyId"])
-                    this.assemblyId.push(item);
-            }
-            if (Array.isArray(_data["assemblyDefectsCount"])) {
-                this.assemblyDefectsCount = [] as any;
-                for (let item of _data["assemblyDefectsCount"])
-                    this.assemblyDefectsCount.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): AssemblyDefects {
-        data = typeof data === 'object' ? data : {};
-        let result = new AssemblyDefects();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.assemblyNames)) {
-            data["assemblyNames"] = [];
-            for (let item of this.assemblyNames)
-                data["assemblyNames"].push(item);
-        }
-        if (Array.isArray(this.assemblyId)) {
-            data["assemblyId"] = [];
-            for (let item of this.assemblyId)
-                data["assemblyId"].push(item);
-        }
-        if (Array.isArray(this.assemblyDefectsCount)) {
-            data["assemblyDefectsCount"] = [];
-            for (let item of this.assemblyDefectsCount)
-                data["assemblyDefectsCount"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): AssemblyDefects {
-        const json = this.toJSON();
-        let result = new AssemblyDefects();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAssemblyDefects {
-    assemblyNames: string[] | undefined;
-    assemblyId: number[] | undefined;
-    assemblyDefectsCount: number[] | undefined;
-}
-
-export class ProductDto implements IProductDto {
-    name: string | undefined;
-    id: number;
-
-    constructor(data?: IProductDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): ProductDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): ProductDto {
-        const json = this.toJSON();
-        let result = new ProductDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IProductDto {
-    name: string | undefined;
-    id: number;
-}
-
-export class ProductDtoListResultDto implements IProductDtoListResultDto {
-    items: ProductDto[] | undefined;
-
-    constructor(data?: IProductDtoListResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(ProductDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ProductDtoListResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductDtoListResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): ProductDtoListResultDto {
-        const json = this.toJSON();
-        let result = new ProductDtoListResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IProductDtoListResultDto {
-    items: ProductDto[] | undefined;
-}
-
-export class CreateRoleDto implements ICreateRoleDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
-
-    constructor(data?: ICreateRoleDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.normalizedName = _data["normalizedName"];
-            this.description = _data["description"];
-            if (Array.isArray(_data["grantedPermissions"])) {
-                this.grantedPermissions = [] as any;
-                for (let item of _data["grantedPermissions"])
-                    this.grantedPermissions.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateRoleDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateRoleDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["normalizedName"] = this.normalizedName;
-        data["description"] = this.description;
-        if (Array.isArray(this.grantedPermissions)) {
-            data["grantedPermissions"] = [];
-            for (let item of this.grantedPermissions)
-                data["grantedPermissions"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): CreateRoleDto {
-        const json = this.toJSON();
-        let result = new CreateRoleDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateRoleDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
-}
-
-export class RoleDto implements IRoleDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
-    id: number;
-
-    constructor(data?: IRoleDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.normalizedName = _data["normalizedName"];
-            this.description = _data["description"];
-            if (Array.isArray(_data["grantedPermissions"])) {
-                this.grantedPermissions = [] as any;
-                for (let item of _data["grantedPermissions"])
-                    this.grantedPermissions.push(item);
-            }
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): RoleDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoleDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["normalizedName"] = this.normalizedName;
-        data["description"] = this.description;
-        if (Array.isArray(this.grantedPermissions)) {
-            data["grantedPermissions"] = [];
-            for (let item of this.grantedPermissions)
-                data["grantedPermissions"].push(item);
-        }
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): RoleDto {
-        const json = this.toJSON();
-        let result = new RoleDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRoleDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
-    id: number;
-}
-
-export class RoleListDto implements IRoleListDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    isStatic: boolean;
-    isDefault: boolean;
-    creationTime: moment.Moment;
-    id: number;
-
-    constructor(data?: IRoleListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isStatic = _data["isStatic"];
-            this.isDefault = _data["isDefault"];
-            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): RoleListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoleListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isStatic"] = this.isStatic;
-        data["isDefault"] = this.isDefault;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): RoleListDto {
-        const json = this.toJSON();
-        let result = new RoleListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRoleListDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    isStatic: boolean;
-    isDefault: boolean;
-    creationTime: moment.Moment;
-    id: number;
-}
-
-export class RoleListDtoListResultDto implements IRoleListDtoListResultDto {
-    items: RoleListDto[] | undefined;
-
-    constructor(data?: IRoleListDtoListResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(RoleListDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): RoleListDtoListResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoleListDtoListResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): RoleListDtoListResultDto {
-        const json = this.toJSON();
-        let result = new RoleListDtoListResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRoleListDtoListResultDto {
-    items: RoleListDto[] | undefined;
-}
-
-export class PermissionDto implements IPermissionDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    description: string | undefined;
-    id: number;
-
-    constructor(data?: IPermissionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.description = _data["description"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): PermissionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PermissionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["description"] = this.description;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): PermissionDto {
-        const json = this.toJSON();
-        let result = new PermissionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPermissionDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    description: string | undefined;
-    id: number;
-}
-
-export class PermissionDtoListResultDto implements IPermissionDtoListResultDto {
-    items: PermissionDto[] | undefined;
-
-    constructor(data?: IPermissionDtoListResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(PermissionDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): PermissionDtoListResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PermissionDtoListResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): PermissionDtoListResultDto {
-        const json = this.toJSON();
-        let result = new PermissionDtoListResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPermissionDtoListResultDto {
-    items: PermissionDto[] | undefined;
-}
-
-export class RoleEditDto implements IRoleEditDto {
-    name: string;
-    displayName: string;
-    description: string | undefined;
-    isStatic: boolean;
-    id: number;
-
-    constructor(data?: IRoleEditDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.description = _data["description"];
-            this.isStatic = _data["isStatic"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): RoleEditDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoleEditDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["description"] = this.description;
-        data["isStatic"] = this.isStatic;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): RoleEditDto {
-        const json = this.toJSON();
-        let result = new RoleEditDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRoleEditDto {
-    name: string;
-    displayName: string;
-    description: string | undefined;
-    isStatic: boolean;
-    id: number;
-}
-
-export class FlatPermissionDto implements IFlatPermissionDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    description: string | undefined;
-
-    constructor(data?: IFlatPermissionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.description = _data["description"];
-        }
-    }
-
-    static fromJS(data: any): FlatPermissionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new FlatPermissionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["description"] = this.description;
-        return data; 
-    }
-
-    clone(): FlatPermissionDto {
-        const json = this.toJSON();
-        let result = new FlatPermissionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IFlatPermissionDto {
-    name: string | undefined;
-    displayName: string | undefined;
-    description: string | undefined;
-}
-
-export class GetRoleForEditOutput implements IGetRoleForEditOutput {
-    role: RoleEditDto;
-    permissions: FlatPermissionDto[] | undefined;
-    grantedPermissionNames: string[] | undefined;
-
-    constructor(data?: IGetRoleForEditOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.role = _data["role"] ? RoleEditDto.fromJS(_data["role"]) : <any>undefined;
-            if (Array.isArray(_data["permissions"])) {
-                this.permissions = [] as any;
-                for (let item of _data["permissions"])
-                    this.permissions.push(FlatPermissionDto.fromJS(item));
-            }
-            if (Array.isArray(_data["grantedPermissionNames"])) {
-                this.grantedPermissionNames = [] as any;
-                for (let item of _data["grantedPermissionNames"])
-                    this.grantedPermissionNames.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): GetRoleForEditOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetRoleForEditOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
-        if (Array.isArray(this.permissions)) {
-            data["permissions"] = [];
-            for (let item of this.permissions)
-                data["permissions"].push(item.toJSON());
-        }
-        if (Array.isArray(this.grantedPermissionNames)) {
-            data["grantedPermissionNames"] = [];
-            for (let item of this.grantedPermissionNames)
-                data["grantedPermissionNames"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): GetRoleForEditOutput {
-        const json = this.toJSON();
-        let result = new GetRoleForEditOutput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGetRoleForEditOutput {
-    role: RoleEditDto;
-    permissions: FlatPermissionDto[] | undefined;
-    grantedPermissionNames: string[] | undefined;
-}
-
-export class RoleDtoPagedResultDto implements IRoleDtoPagedResultDto {
-    totalCount: number;
-    items: RoleDto[] | undefined;
-
-    constructor(data?: IRoleDtoPagedResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(RoleDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): RoleDtoPagedResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoleDtoPagedResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): RoleDtoPagedResultDto {
-        const json = this.toJSON();
-        let result = new RoleDtoPagedResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IRoleDtoPagedResultDto {
-    totalCount: number;
-    items: RoleDto[] | undefined;
 }
 
 export class ApplicationInfoDto implements IApplicationInfoDto {
@@ -4876,14 +3123,15 @@ export interface IApplicationInfoDto {
     features: { [key: string]: boolean; } | undefined;
 }
 
-export class UserLoginInfoDto implements IUserLoginInfoDto {
-    name: string | undefined;
-    surname: string | undefined;
-    userName: string | undefined;
-    emailAddress: string | undefined;
+export class AssemblyDefectsDto implements IAssemblyDefectsDto {
     id: number;
+    assemblyDetectionId: number;
+    stageId: number;
+    defectId: number;
+    confidence: number;
+    imageUrl: string | undefined;
 
-    constructor(data?: IUserLoginInfoDto) {
+    constructor(data?: IAssemblyDefectsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4894,53 +3142,60 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.surname = _data["surname"];
-            this.userName = _data["userName"];
-            this.emailAddress = _data["emailAddress"];
             this.id = _data["id"];
+            this.assemblyDetectionId = _data["assemblyDetectionId"];
+            this.stageId = _data["stageId"];
+            this.defectId = _data["defectId"];
+            this.confidence = _data["confidence"];
+            this.imageUrl = _data["imageUrl"];
         }
     }
 
-    static fromJS(data: any): UserLoginInfoDto {
+    static fromJS(data: any): AssemblyDefectsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserLoginInfoDto();
+        let result = new AssemblyDefectsDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["surname"] = this.surname;
-        data["userName"] = this.userName;
-        data["emailAddress"] = this.emailAddress;
         data["id"] = this.id;
+        data["assemblyDetectionId"] = this.assemblyDetectionId;
+        data["stageId"] = this.stageId;
+        data["defectId"] = this.defectId;
+        data["confidence"] = this.confidence;
+        data["imageUrl"] = this.imageUrl;
         return data; 
     }
 
-    clone(): UserLoginInfoDto {
+    clone(): AssemblyDefectsDto {
         const json = this.toJSON();
-        let result = new UserLoginInfoDto();
+        let result = new AssemblyDefectsDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IUserLoginInfoDto {
-    name: string | undefined;
-    surname: string | undefined;
-    userName: string | undefined;
-    emailAddress: string | undefined;
+export interface IAssemblyDefectsDto {
     id: number;
+    assemblyDetectionId: number;
+    stageId: number;
+    defectId: number;
+    confidence: number;
+    imageUrl: string | undefined;
 }
 
-export class TenantLoginInfoDto implements ITenantLoginInfoDto {
-    tenancyName: string | undefined;
-    name: string | undefined;
+export class AssemblyDetectionDto implements IAssemblyDetectionDto {
     id: number;
+    assemblyLineId: number;
+    productId: number;
+    stageId: number;
+    detectionTime: moment.Moment;
+    defectsCount: number;
+    assemblyDefects: AssemblyDefectsDto[] | undefined;
 
-    constructor(data?: ITenantLoginInfoDto) {
+    constructor(data?: IAssemblyDetectionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4951,143 +3206,66 @@ export class TenantLoginInfoDto implements ITenantLoginInfoDto {
 
     init(_data?: any) {
         if (_data) {
-            this.tenancyName = _data["tenancyName"];
-            this.name = _data["name"];
             this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): TenantLoginInfoDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TenantLoginInfoDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenancyName"] = this.tenancyName;
-        data["name"] = this.name;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TenantLoginInfoDto {
-        const json = this.toJSON();
-        let result = new TenantLoginInfoDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITenantLoginInfoDto {
-    tenancyName: string | undefined;
-    name: string | undefined;
-    id: number;
-}
-
-export class GetCurrentLoginInformationsOutput implements IGetCurrentLoginInformationsOutput {
-    application: ApplicationInfoDto;
-    user: UserLoginInfoDto;
-    tenant: TenantLoginInfoDto;
-
-    constructor(data?: IGetCurrentLoginInformationsOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
+            this.assemblyLineId = _data["assemblyLineId"];
+            this.productId = _data["productId"];
+            this.stageId = _data["stageId"];
+            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
+            this.defectsCount = _data["defectsCount"];
+            if (Array.isArray(_data["assemblyDefects"])) {
+                this.assemblyDefects = [] as any;
+                for (let item of _data["assemblyDefects"])
+                    this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
             }
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.application = _data["application"] ? ApplicationInfoDto.fromJS(_data["application"]) : <any>undefined;
-            this.user = _data["user"] ? UserLoginInfoDto.fromJS(_data["user"]) : <any>undefined;
-            this.tenant = _data["tenant"] ? TenantLoginInfoDto.fromJS(_data["tenant"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): GetCurrentLoginInformationsOutput {
+    static fromJS(data: any): AssemblyDetectionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetCurrentLoginInformationsOutput();
+        let result = new AssemblyDetectionDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["application"] = this.application ? this.application.toJSON() : <any>undefined;
-        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
-        data["tenant"] = this.tenant ? this.tenant.toJSON() : <any>undefined;
-        return data; 
-    }
-
-    clone(): GetCurrentLoginInformationsOutput {
-        const json = this.toJSON();
-        let result = new GetCurrentLoginInformationsOutput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGetCurrentLoginInformationsOutput {
-    application: ApplicationInfoDto;
-    user: UserLoginInfoDto;
-    tenant: TenantLoginInfoDto;
-}
-
-export class StageDto implements IStageDto {
-    name: string | undefined;
-    id: number;
-
-    constructor(data?: IStageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): StageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
         data["id"] = this.id;
+        data["assemblyLineId"] = this.assemblyLineId;
+        data["productId"] = this.productId;
+        data["stageId"] = this.stageId;
+        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
+        data["defectsCount"] = this.defectsCount;
+        if (Array.isArray(this.assemblyDefects)) {
+            data["assemblyDefects"] = [];
+            for (let item of this.assemblyDefects)
+                data["assemblyDefects"].push(item.toJSON());
+        }
         return data; 
     }
 
-    clone(): StageDto {
+    clone(): AssemblyDetectionDto {
         const json = this.toJSON();
-        let result = new StageDto();
+        let result = new AssemblyDetectionDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStageDto {
-    name: string | undefined;
+export interface IAssemblyDetectionDto {
     id: number;
+    assemblyLineId: number;
+    productId: number;
+    stageId: number;
+    detectionTime: moment.Moment;
+    defectsCount: number;
+    assemblyDefects: AssemblyDefectsDto[] | undefined;
 }
 
-export class StageDtoListResultDto implements IStageDtoListResultDto {
-    items: StageDto[] | undefined;
+export class AssemblyDetectionDtoPagedResultDto implements IAssemblyDetectionDtoPagedResultDto {
+    items: AssemblyDetectionDto[] | undefined;
+    totalCount: number;
 
-    constructor(data?: IStageDtoListResultDto) {
+    constructor(data?: IAssemblyDetectionDtoPagedResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5101,207 +3279,41 @@ export class StageDtoListResultDto implements IStageDtoListResultDto {
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items.push(StageDto.fromJS(item));
+                    this.items.push(AssemblyDetectionDto.fromJS(item));
             }
-        }
-    }
-
-    static fromJS(data: any): StageDtoListResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StageDtoListResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): StageDtoListResultDto {
-        const json = this.toJSON();
-        let result = new StageDtoListResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IStageDtoListResultDto {
-    items: StageDto[] | undefined;
-}
-
-export class CreateTenantDto implements ICreateTenantDto {
-    tenancyName: string;
-    name: string;
-    adminEmailAddress: string;
-    connectionString: string | undefined;
-    isActive: boolean;
-
-    constructor(data?: ICreateTenantDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.tenancyName = _data["tenancyName"];
-            this.name = _data["name"];
-            this.adminEmailAddress = _data["adminEmailAddress"];
-            this.connectionString = _data["connectionString"];
-            this.isActive = _data["isActive"];
-        }
-    }
-
-    static fromJS(data: any): CreateTenantDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTenantDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenancyName"] = this.tenancyName;
-        data["name"] = this.name;
-        data["adminEmailAddress"] = this.adminEmailAddress;
-        data["connectionString"] = this.connectionString;
-        data["isActive"] = this.isActive;
-        return data; 
-    }
-
-    clone(): CreateTenantDto {
-        const json = this.toJSON();
-        let result = new CreateTenantDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateTenantDto {
-    tenancyName: string;
-    name: string;
-    adminEmailAddress: string;
-    connectionString: string | undefined;
-    isActive: boolean;
-}
-
-export class TenantDto implements ITenantDto {
-    tenancyName: string;
-    name: string;
-    isActive: boolean;
-    id: number;
-
-    constructor(data?: ITenantDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.tenancyName = _data["tenancyName"];
-            this.name = _data["name"];
-            this.isActive = _data["isActive"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): TenantDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TenantDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenancyName"] = this.tenancyName;
-        data["name"] = this.name;
-        data["isActive"] = this.isActive;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TenantDto {
-        const json = this.toJSON();
-        let result = new TenantDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITenantDto {
-    tenancyName: string;
-    name: string;
-    isActive: boolean;
-    id: number;
-}
-
-export class TenantDtoPagedResultDto implements ITenantDtoPagedResultDto {
-    totalCount: number;
-    items: TenantDto[] | undefined;
-
-    constructor(data?: ITenantDtoPagedResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
             this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(TenantDto.fromJS(item));
-            }
         }
     }
 
-    static fromJS(data: any): TenantDtoPagedResultDto {
+    static fromJS(data: any): AssemblyDetectionDtoPagedResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new TenantDtoPagedResultDto();
+        let result = new AssemblyDetectionDtoPagedResultDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
         if (Array.isArray(this.items)) {
             data["items"] = [];
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
+        data["totalCount"] = this.totalCount;
         return data; 
     }
 
-    clone(): TenantDtoPagedResultDto {
+    clone(): AssemblyDetectionDtoPagedResultDto {
         const json = this.toJSON();
-        let result = new TenantDtoPagedResultDto();
+        let result = new AssemblyDetectionDtoPagedResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface ITenantDtoPagedResultDto {
+export interface IAssemblyDetectionDtoPagedResultDto {
+    items: AssemblyDetectionDto[] | undefined;
     totalCount: number;
-    items: TenantDto[] | undefined;
 }
 
 export class AuthenticateModel implements IAuthenticateModel {
@@ -5410,11 +3422,218 @@ export interface IAuthenticateResultModel {
     userId: number;
 }
 
-export class ExternalLoginProviderInfoModel implements IExternalLoginProviderInfoModel {
-    name: string | undefined;
-    clientId: string | undefined;
+export class ChangePasswordDto implements IChangePasswordDto {
+    currentPassword: string;
+    newPassword: string;
 
-    constructor(data?: IExternalLoginProviderInfoModel) {
+    constructor(data?: IChangePasswordDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.currentPassword = _data["currentPassword"];
+            this.newPassword = _data["newPassword"];
+        }
+    }
+
+    static fromJS(data: any): ChangePasswordDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangePasswordDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["currentPassword"] = this.currentPassword;
+        data["newPassword"] = this.newPassword;
+        return data; 
+    }
+
+    clone(): ChangePasswordDto {
+        const json = this.toJSON();
+        let result = new ChangePasswordDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IChangePasswordDto {
+    currentPassword: string;
+    newPassword: string;
+}
+
+export class ChangeUiThemeInput implements IChangeUiThemeInput {
+    theme: string;
+
+    constructor(data?: IChangeUiThemeInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.theme = _data["theme"];
+        }
+    }
+
+    static fromJS(data: any): ChangeUiThemeInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeUiThemeInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["theme"] = this.theme;
+        return data; 
+    }
+
+    clone(): ChangeUiThemeInput {
+        const json = this.toJSON();
+        let result = new ChangeUiThemeInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IChangeUiThemeInput {
+    theme: string;
+}
+
+export class ChangeUserLanguageDto implements IChangeUserLanguageDto {
+    languageName: string;
+
+    constructor(data?: IChangeUserLanguageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.languageName = _data["languageName"];
+        }
+    }
+
+    static fromJS(data: any): ChangeUserLanguageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeUserLanguageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["languageName"] = this.languageName;
+        return data; 
+    }
+
+    clone(): ChangeUserLanguageDto {
+        const json = this.toJSON();
+        let result = new ChangeUserLanguageDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IChangeUserLanguageDto {
+    languageName: string;
+}
+
+export class CreateAssemblyDetectionDto implements ICreateAssemblyDetectionDto {
+    assemblyLineId: number;
+    productId: number;
+    stageId: number;
+    detectionTime: moment.Moment;
+    defectsCount: number;
+    assemblyDefects: AssemblyDefectsDto[] | undefined;
+
+    constructor(data?: ICreateAssemblyDetectionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.assemblyLineId = _data["assemblyLineId"];
+            this.productId = _data["productId"];
+            this.stageId = _data["stageId"];
+            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
+            this.defectsCount = _data["defectsCount"];
+            if (Array.isArray(_data["assemblyDefects"])) {
+                this.assemblyDefects = [] as any;
+                for (let item of _data["assemblyDefects"])
+                    this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateAssemblyDetectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateAssemblyDetectionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["assemblyLineId"] = this.assemblyLineId;
+        data["productId"] = this.productId;
+        data["stageId"] = this.stageId;
+        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
+        data["defectsCount"] = this.defectsCount;
+        if (Array.isArray(this.assemblyDefects)) {
+            data["assemblyDefects"] = [];
+            for (let item of this.assemblyDefects)
+                data["assemblyDefects"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): CreateAssemblyDetectionDto {
+        const json = this.toJSON();
+        let result = new CreateAssemblyDetectionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateAssemblyDetectionDto {
+    assemblyLineId: number;
+    productId: number;
+    stageId: number;
+    detectionTime: moment.Moment;
+    defectsCount: number;
+    assemblyDefects: AssemblyDefectsDto[] | undefined;
+}
+
+export class CreateRoleDto implements ICreateRoleDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateRoleDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5426,13 +3645,20 @@ export class ExternalLoginProviderInfoModel implements IExternalLoginProviderInf
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
-            this.clientId = _data["clientId"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
         }
     }
 
-    static fromJS(data: any): ExternalLoginProviderInfoModel {
+    static fromJS(data: any): CreateRoleDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ExternalLoginProviderInfoModel();
+        let result = new CreateRoleDto();
         result.init(data);
         return result;
     }
@@ -5440,21 +3666,670 @@ export class ExternalLoginProviderInfoModel implements IExternalLoginProviderInf
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
-        data["clientId"] = this.clientId;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
         return data; 
     }
 
-    clone(): ExternalLoginProviderInfoModel {
+    clone(): CreateRoleDto {
         const json = this.toJSON();
-        let result = new ExternalLoginProviderInfoModel();
+        let result = new CreateRoleDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IExternalLoginProviderInfoModel {
+export interface ICreateRoleDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class CreateTenantDto implements ICreateTenantDto {
+    tenancyName: string;
+    name: string;
+    adminEmailAddress: string;
+    connectionString: string | undefined;
+    isActive: boolean;
+
+    constructor(data?: ICreateTenantDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tenancyName = _data["tenancyName"];
+            this.name = _data["name"];
+            this.adminEmailAddress = _data["adminEmailAddress"];
+            this.connectionString = _data["connectionString"];
+            this.isActive = _data["isActive"];
+        }
+    }
+
+    static fromJS(data: any): CreateTenantDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTenantDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenancyName"] = this.tenancyName;
+        data["name"] = this.name;
+        data["adminEmailAddress"] = this.adminEmailAddress;
+        data["connectionString"] = this.connectionString;
+        data["isActive"] = this.isActive;
+        return data; 
+    }
+
+    clone(): CreateTenantDto {
+        const json = this.toJSON();
+        let result = new CreateTenantDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateTenantDto {
+    tenancyName: string;
+    name: string;
+    adminEmailAddress: string;
+    connectionString: string | undefined;
+    isActive: boolean;
+}
+
+export class CreateUserDto implements ICreateUserDto {
+    userName: string;
+    name: string;
+    surname: string;
+    emailAddress: string;
+    isActive: boolean;
+    roleNames: string[] | undefined;
+    password: string;
+
+    constructor(data?: ICreateUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.emailAddress = _data["emailAddress"];
+            this.isActive = _data["isActive"];
+            if (Array.isArray(_data["roleNames"])) {
+                this.roleNames = [] as any;
+                for (let item of _data["roleNames"])
+                    this.roleNames.push(item);
+            }
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): CreateUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["emailAddress"] = this.emailAddress;
+        data["isActive"] = this.isActive;
+        if (Array.isArray(this.roleNames)) {
+            data["roleNames"] = [];
+            for (let item of this.roleNames)
+                data["roleNames"].push(item);
+        }
+        data["password"] = this.password;
+        return data; 
+    }
+
+    clone(): CreateUserDto {
+        const json = this.toJSON();
+        let result = new CreateUserDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateUserDto {
+    userName: string;
+    name: string;
+    surname: string;
+    emailAddress: string;
+    isActive: boolean;
+    roleNames: string[] | undefined;
+    password: string;
+}
+
+export class DetailedAssemblyDefects implements IDetailedAssemblyDefects {
+    assemblyNames: string[] | undefined;
+    assemblyId: number[] | undefined;
+    assemblyDefectsCount: number[] | undefined;
+
+    constructor(data?: IDetailedAssemblyDefects) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["assemblyNames"])) {
+                this.assemblyNames = [] as any;
+                for (let item of _data["assemblyNames"])
+                    this.assemblyNames.push(item);
+            }
+            if (Array.isArray(_data["assemblyId"])) {
+                this.assemblyId = [] as any;
+                for (let item of _data["assemblyId"])
+                    this.assemblyId.push(item);
+            }
+            if (Array.isArray(_data["assemblyDefectsCount"])) {
+                this.assemblyDefectsCount = [] as any;
+                for (let item of _data["assemblyDefectsCount"])
+                    this.assemblyDefectsCount.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedAssemblyDefects {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedAssemblyDefects();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.assemblyNames)) {
+            data["assemblyNames"] = [];
+            for (let item of this.assemblyNames)
+                data["assemblyNames"].push(item);
+        }
+        if (Array.isArray(this.assemblyId)) {
+            data["assemblyId"] = [];
+            for (let item of this.assemblyId)
+                data["assemblyId"].push(item);
+        }
+        if (Array.isArray(this.assemblyDefectsCount)) {
+            data["assemblyDefectsCount"] = [];
+            for (let item of this.assemblyDefectsCount)
+                data["assemblyDefectsCount"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DetailedAssemblyDefects {
+        const json = this.toJSON();
+        let result = new DetailedAssemblyDefects();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedAssemblyDefects {
+    assemblyNames: string[] | undefined;
+    assemblyId: number[] | undefined;
+    assemblyDefectsCount: number[] | undefined;
+}
+
+export class DetailedDefectiveRatio implements IDetailedDefectiveRatio {
+    names: string[] | undefined;
+    count: number[] | undefined;
+
+    constructor(data?: IDetailedDefectiveRatio) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["names"])) {
+                this.names = [] as any;
+                for (let item of _data["names"])
+                    this.names.push(item);
+            }
+            if (Array.isArray(_data["count"])) {
+                this.count = [] as any;
+                for (let item of _data["count"])
+                    this.count.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedDefectiveRatio {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedDefectiveRatio();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.names)) {
+            data["names"] = [];
+            for (let item of this.names)
+                data["names"].push(item);
+        }
+        if (Array.isArray(this.count)) {
+            data["count"] = [];
+            for (let item of this.count)
+                data["count"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DetailedDefectiveRatio {
+        const json = this.toJSON();
+        let result = new DetailedDefectiveRatio();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedDefectiveRatio {
+    names: string[] | undefined;
+    count: number[] | undefined;
+}
+
+export class DetailedDefectTrendDataDto implements IDetailedDefectTrendDataDto {
     name: string | undefined;
-    clientId: string | undefined;
+    defectId: number;
+    data: number[] | undefined;
+
+    constructor(data?: IDetailedDefectTrendDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.defectId = _data["defectId"];
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedDefectTrendDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedDefectTrendDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["defectId"] = this.defectId;
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DetailedDefectTrendDataDto {
+        const json = this.toJSON();
+        let result = new DetailedDefectTrendDataDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedDefectTrendDataDto {
+    name: string | undefined;
+    defectId: number;
+    data: number[] | undefined;
+}
+
+export class DetailedDefectTrendDto implements IDetailedDefectTrendDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: DetailedDefectTrendDataDto[] | undefined;
+
+    constructor(data?: IDetailedDefectTrendDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["all"])) {
+                this.all = [] as any;
+                for (let item of _data["all"])
+                    this.all.push(item);
+            }
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(DetailedDefectTrendDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedDefectTrendDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedDefectTrendDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.all)) {
+            data["all"] = [];
+            for (let item of this.all)
+                data["all"].push(item);
+        }
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): DetailedDefectTrendDto {
+        const json = this.toJSON();
+        let result = new DetailedDefectTrendDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedDefectTrendDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: DetailedDefectTrendDataDto[] | undefined;
+}
+
+export class DetailedGeneralInsightsDto implements IDetailedGeneralInsightsDto {
+    totalDetections: number;
+    totalDefects: number;
+    totalGood: number;
+    labels: moment.Moment[] | undefined;
+    detections: number[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+
+    constructor(data?: IDetailedGeneralInsightsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalDetections = _data["totalDetections"];
+            this.totalDefects = _data["totalDefects"];
+            this.totalGood = _data["totalGood"];
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["detections"])) {
+                this.detections = [] as any;
+                for (let item of _data["detections"])
+                    this.detections.push(item);
+            }
+            if (Array.isArray(_data["defects"])) {
+                this.defects = [] as any;
+                for (let item of _data["defects"])
+                    this.defects.push(item);
+            }
+            if (Array.isArray(_data["good"])) {
+                this.good = [] as any;
+                for (let item of _data["good"])
+                    this.good.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedGeneralInsightsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedGeneralInsightsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalDetections"] = this.totalDetections;
+        data["totalDefects"] = this.totalDefects;
+        data["totalGood"] = this.totalGood;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.detections)) {
+            data["detections"] = [];
+            for (let item of this.detections)
+                data["detections"].push(item);
+        }
+        if (Array.isArray(this.defects)) {
+            data["defects"] = [];
+            for (let item of this.defects)
+                data["defects"].push(item);
+        }
+        if (Array.isArray(this.good)) {
+            data["good"] = [];
+            for (let item of this.good)
+                data["good"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DetailedGeneralInsightsDto {
+        const json = this.toJSON();
+        let result = new DetailedGeneralInsightsDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedGeneralInsightsDto {
+    totalDetections: number;
+    totalDefects: number;
+    totalGood: number;
+    labels: moment.Moment[] | undefined;
+    detections: number[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+}
+
+export class DetailedRevenueLossDataDto implements IDetailedRevenueLossDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+
+    constructor(data?: IDetailedRevenueLossDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.id = _data["id"];
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedRevenueLossDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedRevenueLossDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["id"] = this.id;
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DetailedRevenueLossDataDto {
+        const json = this.toJSON();
+        let result = new DetailedRevenueLossDataDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedRevenueLossDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+}
+
+export class DetailedRevenueLossDto implements IDetailedRevenueLossDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: DetailedRevenueLossDataDto[] | undefined;
+
+    constructor(data?: IDetailedRevenueLossDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["all"])) {
+                this.all = [] as any;
+                for (let item of _data["all"])
+                    this.all.push(item);
+            }
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(DetailedRevenueLossDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DetailedRevenueLossDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DetailedRevenueLossDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.all)) {
+            data["all"] = [];
+            for (let item of this.all)
+                data["all"].push(item);
+        }
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): DetailedRevenueLossDto {
+        const json = this.toJSON();
+        let result = new DetailedRevenueLossDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDetailedRevenueLossDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: DetailedRevenueLossDataDto[] | undefined;
 }
 
 export class ExternalAuthenticateModel implements IExternalAuthenticateModel {
@@ -5563,16 +4438,11 @@ export interface IExternalAuthenticateResultModel {
     waitingForActivation: boolean;
 }
 
-export class CreateUserDto implements ICreateUserDto {
-    userName: string;
-    name: string;
-    surname: string;
-    emailAddress: string;
-    isActive: boolean;
-    roleNames: string[] | undefined;
-    password: string;
+export class ExternalLoginProviderInfoModel implements IExternalLoginProviderInfoModel {
+    name: string | undefined;
+    clientId: string | undefined;
 
-    constructor(data?: ICreateUserDto) {
+    constructor(data?: IExternalLoginProviderInfoModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5583,74 +4453,44 @@ export class CreateUserDto implements ICreateUserDto {
 
     init(_data?: any) {
         if (_data) {
-            this.userName = _data["userName"];
             this.name = _data["name"];
-            this.surname = _data["surname"];
-            this.emailAddress = _data["emailAddress"];
-            this.isActive = _data["isActive"];
-            if (Array.isArray(_data["roleNames"])) {
-                this.roleNames = [] as any;
-                for (let item of _data["roleNames"])
-                    this.roleNames.push(item);
-            }
-            this.password = _data["password"];
+            this.clientId = _data["clientId"];
         }
     }
 
-    static fromJS(data: any): CreateUserDto {
+    static fromJS(data: any): ExternalLoginProviderInfoModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateUserDto();
+        let result = new ExternalLoginProviderInfoModel();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName;
         data["name"] = this.name;
-        data["surname"] = this.surname;
-        data["emailAddress"] = this.emailAddress;
-        data["isActive"] = this.isActive;
-        if (Array.isArray(this.roleNames)) {
-            data["roleNames"] = [];
-            for (let item of this.roleNames)
-                data["roleNames"].push(item);
-        }
-        data["password"] = this.password;
+        data["clientId"] = this.clientId;
         return data; 
     }
 
-    clone(): CreateUserDto {
+    clone(): ExternalLoginProviderInfoModel {
         const json = this.toJSON();
-        let result = new CreateUserDto();
+        let result = new ExternalLoginProviderInfoModel();
         result.init(json);
         return result;
     }
 }
 
-export interface ICreateUserDto {
-    userName: string;
-    name: string;
-    surname: string;
-    emailAddress: string;
-    isActive: boolean;
-    roleNames: string[] | undefined;
-    password: string;
+export interface IExternalLoginProviderInfoModel {
+    name: string | undefined;
+    clientId: string | undefined;
 }
 
-export class UserDto implements IUserDto {
-    userName: string;
-    name: string;
-    surname: string;
-    emailAddress: string;
-    isActive: boolean;
-    fullName: string | undefined;
-    lastLoginTime: moment.Moment | undefined;
-    creationTime: moment.Moment;
-    roleNames: string[] | undefined;
-    id: number;
+export class FlatPermissionDto implements IFlatPermissionDto {
+    name: string | undefined;
+    displayName: string | undefined;
+    description: string | undefined;
 
-    constructor(data?: IUserDto) {
+    constructor(data?: IFlatPermissionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5661,68 +4501,157 @@ export class UserDto implements IUserDto {
 
     init(_data?: any) {
         if (_data) {
-            this.userName = _data["userName"];
             this.name = _data["name"];
-            this.surname = _data["surname"];
-            this.emailAddress = _data["emailAddress"];
-            this.isActive = _data["isActive"];
-            this.fullName = _data["fullName"];
-            this.lastLoginTime = _data["lastLoginTime"] ? moment(_data["lastLoginTime"].toString()) : <any>undefined;
-            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
-            if (Array.isArray(_data["roleNames"])) {
-                this.roleNames = [] as any;
-                for (let item of _data["roleNames"])
-                    this.roleNames.push(item);
-            }
-            this.id = _data["id"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
         }
     }
 
-    static fromJS(data: any): UserDto {
+    static fromJS(data: any): FlatPermissionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto();
+        let result = new FlatPermissionDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName;
         data["name"] = this.name;
-        data["surname"] = this.surname;
-        data["emailAddress"] = this.emailAddress;
-        data["isActive"] = this.isActive;
-        data["fullName"] = this.fullName;
-        data["lastLoginTime"] = this.lastLoginTime ? this.lastLoginTime.toISOString() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        if (Array.isArray(this.roleNames)) {
-            data["roleNames"] = [];
-            for (let item of this.roleNames)
-                data["roleNames"].push(item);
-        }
-        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
         return data; 
     }
 
-    clone(): UserDto {
+    clone(): FlatPermissionDto {
         const json = this.toJSON();
-        let result = new UserDto();
+        let result = new FlatPermissionDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IUserDto {
-    userName: string;
-    name: string;
-    surname: string;
-    emailAddress: string;
-    isActive: boolean;
-    fullName: string | undefined;
-    lastLoginTime: moment.Moment | undefined;
-    creationTime: moment.Moment;
-    roleNames: string[] | undefined;
-    id: number;
+export interface IFlatPermissionDto {
+    name: string | undefined;
+    displayName: string | undefined;
+    description: string | undefined;
+}
+
+export class GetCurrentLoginInformationsOutput implements IGetCurrentLoginInformationsOutput {
+    application: ApplicationInfoDto;
+    user: UserLoginInfoDto;
+    tenant: TenantLoginInfoDto;
+
+    constructor(data?: IGetCurrentLoginInformationsOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.application = _data["application"] ? ApplicationInfoDto.fromJS(_data["application"]) : <any>undefined;
+            this.user = _data["user"] ? UserLoginInfoDto.fromJS(_data["user"]) : <any>undefined;
+            this.tenant = _data["tenant"] ? TenantLoginInfoDto.fromJS(_data["tenant"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetCurrentLoginInformationsOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCurrentLoginInformationsOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["application"] = this.application ? this.application.toJSON() : <any>undefined;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetCurrentLoginInformationsOutput {
+        const json = this.toJSON();
+        let result = new GetCurrentLoginInformationsOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetCurrentLoginInformationsOutput {
+    application: ApplicationInfoDto;
+    user: UserLoginInfoDto;
+    tenant: TenantLoginInfoDto;
+}
+
+export class GetRoleForEditOutput implements IGetRoleForEditOutput {
+    role: RoleEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetRoleForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? RoleEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetRoleForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRoleForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetRoleForEditOutput {
+        const json = this.toJSON();
+        let result = new GetRoleForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetRoleForEditOutput {
+    role: RoleEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
 }
 
 export class Int64EntityDto implements IInt64EntityDto {
@@ -5768,10 +4697,672 @@ export interface IInt64EntityDto {
     id: number;
 }
 
-export class RoleDtoListResultDto implements IRoleDtoListResultDto {
-    items: RoleDto[] | undefined;
+export class IsTenantAvailableInput implements IIsTenantAvailableInput {
+    tenancyName: string;
 
-    constructor(data?: IRoleDtoListResultDto) {
+    constructor(data?: IIsTenantAvailableInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tenancyName = _data["tenancyName"];
+        }
+    }
+
+    static fromJS(data: any): IsTenantAvailableInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new IsTenantAvailableInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenancyName"] = this.tenancyName;
+        return data; 
+    }
+
+    clone(): IsTenantAvailableInput {
+        const json = this.toJSON();
+        let result = new IsTenantAvailableInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IIsTenantAvailableInput {
+    tenancyName: string;
+}
+
+export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
+    state: TenantAvailabilityState;
+    tenantId: number | undefined;
+
+    constructor(data?: IIsTenantAvailableOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.state = _data["state"];
+            this.tenantId = _data["tenantId"];
+        }
+    }
+
+    static fromJS(data: any): IsTenantAvailableOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new IsTenantAvailableOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["state"] = this.state;
+        data["tenantId"] = this.tenantId;
+        return data; 
+    }
+
+    clone(): IsTenantAvailableOutput {
+        const json = this.toJSON();
+        let result = new IsTenantAvailableOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IIsTenantAvailableOutput {
+    state: TenantAvailabilityState;
+    tenantId: number | undefined;
+}
+
+export class OverviewDefectiveRatio implements IOverviewDefectiveRatio {
+    names: string[] | undefined;
+    count: number[] | undefined;
+
+    constructor(data?: IOverviewDefectiveRatio) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["names"])) {
+                this.names = [] as any;
+                for (let item of _data["names"])
+                    this.names.push(item);
+            }
+            if (Array.isArray(_data["count"])) {
+                this.count = [] as any;
+                for (let item of _data["count"])
+                    this.count.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewDefectiveRatio {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewDefectiveRatio();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.names)) {
+            data["names"] = [];
+            for (let item of this.names)
+                data["names"].push(item);
+        }
+        if (Array.isArray(this.count)) {
+            data["count"] = [];
+            for (let item of this.count)
+                data["count"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): OverviewDefectiveRatio {
+        const json = this.toJSON();
+        let result = new OverviewDefectiveRatio();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewDefectiveRatio {
+    names: string[] | undefined;
+    count: number[] | undefined;
+}
+
+export class OverviewDefectRatioDto implements IOverviewDefectRatioDto {
+    ids: number[] | undefined;
+    name: string[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+
+    constructor(data?: IOverviewDefectRatioDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["ids"])) {
+                this.ids = [] as any;
+                for (let item of _data["ids"])
+                    this.ids.push(item);
+            }
+            if (Array.isArray(_data["name"])) {
+                this.name = [] as any;
+                for (let item of _data["name"])
+                    this.name.push(item);
+            }
+            if (Array.isArray(_data["defects"])) {
+                this.defects = [] as any;
+                for (let item of _data["defects"])
+                    this.defects.push(item);
+            }
+            if (Array.isArray(_data["good"])) {
+                this.good = [] as any;
+                for (let item of _data["good"])
+                    this.good.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewDefectRatioDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewDefectRatioDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.ids)) {
+            data["ids"] = [];
+            for (let item of this.ids)
+                data["ids"].push(item);
+        }
+        if (Array.isArray(this.name)) {
+            data["name"] = [];
+            for (let item of this.name)
+                data["name"].push(item);
+        }
+        if (Array.isArray(this.defects)) {
+            data["defects"] = [];
+            for (let item of this.defects)
+                data["defects"].push(item);
+        }
+        if (Array.isArray(this.good)) {
+            data["good"] = [];
+            for (let item of this.good)
+                data["good"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): OverviewDefectRatioDto {
+        const json = this.toJSON();
+        let result = new OverviewDefectRatioDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewDefectRatioDto {
+    ids: number[] | undefined;
+    name: string[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+}
+
+export class OverviewDefectTrendDataDto implements IOverviewDefectTrendDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+
+    constructor(data?: IOverviewDefectTrendDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.id = _data["id"];
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewDefectTrendDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewDefectTrendDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["id"] = this.id;
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): OverviewDefectTrendDataDto {
+        const json = this.toJSON();
+        let result = new OverviewDefectTrendDataDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewDefectTrendDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+}
+
+export class OverviewDefectTrendDto implements IOverviewDefectTrendDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: OverviewDefectTrendDataDto[] | undefined;
+
+    constructor(data?: IOverviewDefectTrendDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["all"])) {
+                this.all = [] as any;
+                for (let item of _data["all"])
+                    this.all.push(item);
+            }
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(OverviewDefectTrendDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewDefectTrendDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewDefectTrendDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.all)) {
+            data["all"] = [];
+            for (let item of this.all)
+                data["all"].push(item);
+        }
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OverviewDefectTrendDto {
+        const json = this.toJSON();
+        let result = new OverviewDefectTrendDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewDefectTrendDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: OverviewDefectTrendDataDto[] | undefined;
+}
+
+export class OverviewGeneralInsightsDto implements IOverviewGeneralInsightsDto {
+    totalDetections: number;
+    totalDefects: number;
+    totalGood: number;
+    labels: moment.Moment[] | undefined;
+    detections: number[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+
+    constructor(data?: IOverviewGeneralInsightsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalDetections = _data["totalDetections"];
+            this.totalDefects = _data["totalDefects"];
+            this.totalGood = _data["totalGood"];
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["detections"])) {
+                this.detections = [] as any;
+                for (let item of _data["detections"])
+                    this.detections.push(item);
+            }
+            if (Array.isArray(_data["defects"])) {
+                this.defects = [] as any;
+                for (let item of _data["defects"])
+                    this.defects.push(item);
+            }
+            if (Array.isArray(_data["good"])) {
+                this.good = [] as any;
+                for (let item of _data["good"])
+                    this.good.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewGeneralInsightsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewGeneralInsightsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalDetections"] = this.totalDetections;
+        data["totalDefects"] = this.totalDefects;
+        data["totalGood"] = this.totalGood;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.detections)) {
+            data["detections"] = [];
+            for (let item of this.detections)
+                data["detections"].push(item);
+        }
+        if (Array.isArray(this.defects)) {
+            data["defects"] = [];
+            for (let item of this.defects)
+                data["defects"].push(item);
+        }
+        if (Array.isArray(this.good)) {
+            data["good"] = [];
+            for (let item of this.good)
+                data["good"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): OverviewGeneralInsightsDto {
+        const json = this.toJSON();
+        let result = new OverviewGeneralInsightsDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewGeneralInsightsDto {
+    totalDetections: number;
+    totalDefects: number;
+    totalGood: number;
+    labels: moment.Moment[] | undefined;
+    detections: number[] | undefined;
+    defects: number[] | undefined;
+    good: number[] | undefined;
+}
+
+export class OverviewRevenueLossDataDto implements IOverviewRevenueLossDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+
+    constructor(data?: IOverviewRevenueLossDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.id = _data["id"];
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewRevenueLossDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewRevenueLossDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["id"] = this.id;
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): OverviewRevenueLossDataDto {
+        const json = this.toJSON();
+        let result = new OverviewRevenueLossDataDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewRevenueLossDataDto {
+    name: string | undefined;
+    id: number;
+    data: number[] | undefined;
+}
+
+export class OverviewRevenueLossDto implements IOverviewRevenueLossDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: OverviewRevenueLossDataDto[] | undefined;
+
+    constructor(data?: IOverviewRevenueLossDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels.push(moment(item));
+            }
+            if (Array.isArray(_data["all"])) {
+                this.all = [] as any;
+                for (let item of _data["all"])
+                    this.all.push(item);
+            }
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data.push(OverviewRevenueLossDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OverviewRevenueLossDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OverviewRevenueLossDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item.toISOString());
+        }
+        if (Array.isArray(this.all)) {
+            data["all"] = [];
+            for (let item of this.all)
+                data["all"].push(item);
+        }
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OverviewRevenueLossDto {
+        const json = this.toJSON();
+        let result = new OverviewRevenueLossDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOverviewRevenueLossDto {
+    labels: moment.Moment[] | undefined;
+    all: number[] | undefined;
+    data: OverviewRevenueLossDataDto[] | undefined;
+}
+
+export class PermissionDto implements IPermissionDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    description: string | undefined;
+
+    constructor(data?: IPermissionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): PermissionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PermissionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        return data; 
+    }
+
+    clone(): PermissionDto {
+        const json = this.toJSON();
+        let result = new PermissionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPermissionDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    description: string | undefined;
+}
+
+export class PermissionDtoListResultDto implements IPermissionDtoListResultDto {
+    items: PermissionDto[] | undefined;
+
+    constructor(data?: IPermissionDtoListResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5785,14 +5376,14 @@ export class RoleDtoListResultDto implements IRoleDtoListResultDto {
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items.push(RoleDto.fromJS(item));
+                    this.items.push(PermissionDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): RoleDtoListResultDto {
+    static fromJS(data: any): PermissionDtoListResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new RoleDtoListResultDto();
+        let result = new PermissionDtoListResultDto();
         result.init(data);
         return result;
     }
@@ -5807,22 +5398,23 @@ export class RoleDtoListResultDto implements IRoleDtoListResultDto {
         return data; 
     }
 
-    clone(): RoleDtoListResultDto {
+    clone(): PermissionDtoListResultDto {
         const json = this.toJSON();
-        let result = new RoleDtoListResultDto();
+        let result = new PermissionDtoListResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IRoleDtoListResultDto {
-    items: RoleDto[] | undefined;
+export interface IPermissionDtoListResultDto {
+    items: PermissionDto[] | undefined;
 }
 
-export class ChangeUserLanguageDto implements IChangeUserLanguageDto {
-    languageName: string;
+export class ProductDto implements IProductDto {
+    id: number;
+    name: string | undefined;
 
-    constructor(data?: IChangeUserLanguageDto) {
+    constructor(data?: IProductDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5833,40 +5425,42 @@ export class ChangeUserLanguageDto implements IChangeUserLanguageDto {
 
     init(_data?: any) {
         if (_data) {
-            this.languageName = _data["languageName"];
+            this.id = _data["id"];
+            this.name = _data["name"];
         }
     }
 
-    static fromJS(data: any): ChangeUserLanguageDto {
+    static fromJS(data: any): ProductDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ChangeUserLanguageDto();
+        let result = new ProductDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["languageName"] = this.languageName;
+        data["id"] = this.id;
+        data["name"] = this.name;
         return data; 
     }
 
-    clone(): ChangeUserLanguageDto {
+    clone(): ProductDto {
         const json = this.toJSON();
-        let result = new ChangeUserLanguageDto();
+        let result = new ProductDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IChangeUserLanguageDto {
-    languageName: string;
+export interface IProductDto {
+    id: number;
+    name: string | undefined;
 }
 
-export class ChangePasswordDto implements IChangePasswordDto {
-    currentPassword: string;
-    newPassword: string;
+export class ProductDtoListResultDto implements IProductDtoListResultDto {
+    items: ProductDto[] | undefined;
 
-    constructor(data?: IChangePasswordDto) {
+    constructor(data?: IProductDtoListResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5877,36 +5471,147 @@ export class ChangePasswordDto implements IChangePasswordDto {
 
     init(_data?: any) {
         if (_data) {
-            this.currentPassword = _data["currentPassword"];
-            this.newPassword = _data["newPassword"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(ProductDto.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): ChangePasswordDto {
+    static fromJS(data: any): ProductDtoListResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ChangePasswordDto();
+        let result = new ProductDtoListResultDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["currentPassword"] = this.currentPassword;
-        data["newPassword"] = this.newPassword;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
         return data; 
     }
 
-    clone(): ChangePasswordDto {
+    clone(): ProductDtoListResultDto {
         const json = this.toJSON();
-        let result = new ChangePasswordDto();
+        let result = new ProductDtoListResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IChangePasswordDto {
-    currentPassword: string;
-    newPassword: string;
+export interface IProductDtoListResultDto {
+    items: ProductDto[] | undefined;
+}
+
+export class RegisterInput implements IRegisterInput {
+    name: string;
+    surname: string;
+    userName: string;
+    emailAddress: string;
+    password: string;
+    captchaResponse: string | undefined;
+
+    constructor(data?: IRegisterInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.userName = _data["userName"];
+            this.emailAddress = _data["emailAddress"];
+            this.password = _data["password"];
+            this.captchaResponse = _data["captchaResponse"];
+        }
+    }
+
+    static fromJS(data: any): RegisterInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["userName"] = this.userName;
+        data["emailAddress"] = this.emailAddress;
+        data["password"] = this.password;
+        data["captchaResponse"] = this.captchaResponse;
+        return data; 
+    }
+
+    clone(): RegisterInput {
+        const json = this.toJSON();
+        let result = new RegisterInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRegisterInput {
+    name: string;
+    surname: string;
+    userName: string;
+    emailAddress: string;
+    password: string;
+    captchaResponse: string | undefined;
+}
+
+export class RegisterOutput implements IRegisterOutput {
+    canLogin: boolean;
+
+    constructor(data?: IRegisterOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canLogin = _data["canLogin"];
+        }
+    }
+
+    static fromJS(data: any): RegisterOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canLogin"] = this.canLogin;
+        return data; 
+    }
+
+    clone(): RegisterOutput {
+        const json = this.toJSON();
+        let result = new RegisterOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRegisterOutput {
+    canLogin: boolean;
 }
 
 export class ResetPasswordDto implements IResetPasswordDto {
@@ -5960,9 +5665,711 @@ export interface IResetPasswordDto {
     newPassword: string;
 }
 
-export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
+export class RoleDto implements IRoleDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: IRoleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): RoleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): RoleDto {
+        const json = this.toJSON();
+        let result = new RoleDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class RoleDtoListResultDto implements IRoleDtoListResultDto {
+    items: RoleDto[] | undefined;
+
+    constructor(data?: IRoleDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(RoleDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RoleDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): RoleDtoListResultDto {
+        const json = this.toJSON();
+        let result = new RoleDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleDtoListResultDto {
+    items: RoleDto[] | undefined;
+}
+
+export class RoleDtoPagedResultDto implements IRoleDtoPagedResultDto {
+    items: RoleDto[] | undefined;
     totalCount: number;
+
+    constructor(data?: IRoleDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(RoleDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): RoleDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): RoleDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new RoleDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleDtoPagedResultDto {
+    items: RoleDto[] | undefined;
+    totalCount: number;
+}
+
+export class RoleEditDto implements IRoleEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: IRoleEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): RoleEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): RoleEditDto {
+        const json = this.toJSON();
+        let result = new RoleEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class RoleListDto implements IRoleListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: IRoleListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): RoleListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): RoleListDto {
+        const json = this.toJSON();
+        let result = new RoleListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class RoleListDtoListResultDto implements IRoleListDtoListResultDto {
+    items: RoleListDto[] | undefined;
+
+    constructor(data?: IRoleListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(RoleListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RoleListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): RoleListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new RoleListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRoleListDtoListResultDto {
+    items: RoleListDto[] | undefined;
+}
+
+export class StageDto implements IStageDto {
+    id: number;
+    name: string | undefined;
+
+    constructor(data?: IStageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): StageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): StageDto {
+        const json = this.toJSON();
+        let result = new StageDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStageDto {
+    id: number;
+    name: string | undefined;
+}
+
+export class StageDtoListResultDto implements IStageDtoListResultDto {
+    items: StageDto[] | undefined;
+
+    constructor(data?: IStageDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(StageDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StageDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StageDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StageDtoListResultDto {
+        const json = this.toJSON();
+        let result = new StageDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStageDtoListResultDto {
+    items: StageDto[] | undefined;
+}
+
+export enum TenantAvailabilityState {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+}
+
+export class TenantDto implements ITenantDto {
+    id: number;
+    tenancyName: string;
+    name: string;
+    isActive: boolean;
+
+    constructor(data?: ITenantDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.tenancyName = _data["tenancyName"];
+            this.name = _data["name"];
+            this.isActive = _data["isActive"];
+        }
+    }
+
+    static fromJS(data: any): TenantDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["tenancyName"] = this.tenancyName;
+        data["name"] = this.name;
+        data["isActive"] = this.isActive;
+        return data; 
+    }
+
+    clone(): TenantDto {
+        const json = this.toJSON();
+        let result = new TenantDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITenantDto {
+    id: number;
+    tenancyName: string;
+    name: string;
+    isActive: boolean;
+}
+
+export class TenantDtoPagedResultDto implements ITenantDtoPagedResultDto {
+    items: TenantDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: ITenantDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(TenantDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): TenantDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): TenantDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new TenantDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITenantDtoPagedResultDto {
+    items: TenantDto[] | undefined;
+    totalCount: number;
+}
+
+export class TenantLoginInfoDto implements ITenantLoginInfoDto {
+    id: number;
+    tenancyName: string | undefined;
+    name: string | undefined;
+
+    constructor(data?: ITenantLoginInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.tenancyName = _data["tenancyName"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): TenantLoginInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantLoginInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["tenancyName"] = this.tenancyName;
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): TenantLoginInfoDto {
+        const json = this.toJSON();
+        let result = new TenantLoginInfoDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITenantLoginInfoDto {
+    id: number;
+    tenancyName: string | undefined;
+    name: string | undefined;
+}
+
+export class UserDto implements IUserDto {
+    id: number;
+    userName: string;
+    name: string;
+    surname: string;
+    emailAddress: string;
+    isActive: boolean;
+    fullName: string | undefined;
+    lastLoginTime: moment.Moment | undefined;
+    creationTime: moment.Moment;
+    roleNames: string[] | undefined;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.emailAddress = _data["emailAddress"];
+            this.isActive = _data["isActive"];
+            this.fullName = _data["fullName"];
+            this.lastLoginTime = _data["lastLoginTime"] ? moment(_data["lastLoginTime"].toString()) : <any>undefined;
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["roleNames"])) {
+                this.roleNames = [] as any;
+                for (let item of _data["roleNames"])
+                    this.roleNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["emailAddress"] = this.emailAddress;
+        data["isActive"] = this.isActive;
+        data["fullName"] = this.fullName;
+        data["lastLoginTime"] = this.lastLoginTime ? this.lastLoginTime.toISOString() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.roleNames)) {
+            data["roleNames"] = [];
+            for (let item of this.roleNames)
+                data["roleNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): UserDto {
+        const json = this.toJSON();
+        let result = new UserDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserDto {
+    id: number;
+    userName: string;
+    name: string;
+    surname: string;
+    emailAddress: string;
+    isActive: boolean;
+    fullName: string | undefined;
+    lastLoginTime: moment.Moment | undefined;
+    creationTime: moment.Moment;
+    roleNames: string[] | undefined;
+}
+
+export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
     items: UserDto[] | undefined;
+    totalCount: number;
 
     constructor(data?: IUserDtoPagedResultDto) {
         if (data) {
@@ -5975,12 +6382,12 @@ export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
 
     init(_data?: any) {
         if (_data) {
-            this.totalCount = _data["totalCount"];
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
                     this.items.push(UserDto.fromJS(item));
             }
+            this.totalCount = _data["totalCount"];
         }
     }
 
@@ -5993,12 +6400,12 @@ export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
         if (Array.isArray(this.items)) {
             data["items"] = [];
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
+        data["totalCount"] = this.totalCount;
         return data; 
     }
 
@@ -6011,8 +6418,67 @@ export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
 }
 
 export interface IUserDtoPagedResultDto {
-    totalCount: number;
     items: UserDto[] | undefined;
+    totalCount: number;
+}
+
+export class UserLoginInfoDto implements IUserLoginInfoDto {
+    id: number;
+    name: string | undefined;
+    surname: string | undefined;
+    userName: string | undefined;
+    emailAddress: string | undefined;
+
+    constructor(data?: IUserLoginInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.userName = _data["userName"];
+            this.emailAddress = _data["emailAddress"];
+        }
+    }
+
+    static fromJS(data: any): UserLoginInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserLoginInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["userName"] = this.userName;
+        data["emailAddress"] = this.emailAddress;
+        return data; 
+    }
+
+    clone(): UserLoginInfoDto {
+        const json = this.toJSON();
+        let result = new UserLoginInfoDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserLoginInfoDto {
+    id: number;
+    name: string | undefined;
+    surname: string | undefined;
+    userName: string | undefined;
+    emailAddress: string | undefined;
 }
 
 export class ApiException extends Error {

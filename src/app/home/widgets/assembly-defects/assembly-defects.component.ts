@@ -1,8 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { AssemblyDefects, HomeServiceProxy } from '@shared/service-proxies/service-proxies';
-import { sum } from 'lodash';
-import { totalmem } from 'os';
+import { DetailedAssemblyDefects, DetailedDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
 
 declare function renderCharts(selector, options);
 
@@ -13,7 +11,7 @@ declare function renderCharts(selector, options);
 })
 export class AssemblyDefectsComponent implements OnInit, AfterViewInit {
 
-  assemblyDefects: AssemblyDefects
+  assemblyDefects: DetailedAssemblyDefects
   sum = 0
   chart
   optionsCircle4 = {
@@ -76,7 +74,7 @@ export class AssemblyDefectsComponent implements OnInit, AfterViewInit {
     }]
   }
 
-  constructor(private _homeService: HomeServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
+  constructor(private _homeService: DetailedDashboardServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
   ngAfterViewInit(): void {
   }
 

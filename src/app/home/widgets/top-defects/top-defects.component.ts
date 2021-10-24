@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { DetailedDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
 import { filter } from 'lodash';
 import { duration } from 'moment';
 
@@ -39,7 +39,7 @@ export class TopDefectsComponent extends AppComponentBase implements OnInit {
 
   chart
 
-  constructor(injector: Injector, private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: HomeServiceProxy) {
+  constructor(injector: Injector, private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: DetailedDashboardServiceProxy) {
     super(injector)
    }
 
@@ -52,7 +52,7 @@ export class TopDefectsComponent extends AppComponentBase implements OnInit {
             this.chart.destroy()
           }
       }
-      this._homeService.getDefectiveRatio(filter.duration, filter.product, filter.stage, 0)
+      this._homeService.getDefectiveRatio(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
         this.optionDonut.labels = result.names
         this.optionDonut.series = result.count

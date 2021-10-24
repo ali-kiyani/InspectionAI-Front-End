@@ -1,6 +1,7 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { DetailedDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
+import * as moment from 'moment';
 
 declare function renderCharts(selector, options);
 
@@ -49,12 +50,9 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
       },
       categories: [],
       labels: {
-        formatter: function (value: Date, timestamp) {
+        formatter: function (value: any, timestamp) {
           if (value) {
-            let d = new Date(value)
-            d.setDate(d.getDate() + 1)
-            let time = d.toISOString().split('T')[0]
-            return time
+            return moment(value).format('DD-MM-YY')
           }
         }, 
       }
@@ -66,7 +64,7 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
 
   chart
 
-  constructor(private _homeService: HomeServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
+  constructor(private _homeService: DetailedDashboardServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
 
   ngAfterViewInit(): void {
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {

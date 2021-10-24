@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Injector, OnInit } f
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { GeneralInsightsDto, HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { DetailedDashboardServiceProxy, OverviewGeneralInsightsDto } from '@shared/service-proxies/service-proxies';
 
 declare function renderCharts(selector, options);
 
@@ -14,7 +14,7 @@ declare function renderCharts(selector, options);
 })
 export class TopWidgetsComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
-  insights = new GeneralInsightsDto();
+  insights = new OverviewGeneralInsightsDto();
   loaded = false
   spark1 = {
     chart: {
@@ -184,7 +184,7 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
   chart2
   chart3
 
-  constructor(injector: Injector, private _homeService: HomeServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) {
+  constructor(injector: Injector, private _homeService: DetailedDashboardServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) {
     super(injector);
   }
   ngAfterViewInit(): void {
@@ -204,7 +204,7 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
             this.chart3.destroy()
           }
       }
-      this._homeService.getGeneralInsights(filter.duration, filter.product, filter.stage, 0)
+      this._homeService.getGeneralInsights(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
         this.insights = result;
         this.spark1.labels = result.labels

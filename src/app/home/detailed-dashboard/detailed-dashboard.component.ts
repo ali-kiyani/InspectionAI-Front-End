@@ -34,14 +34,21 @@ export class DetailedDashboardComponent extends AppComponentBase implements OnIn
         return
       this.products = p.items
       this.selectedProduct = p.items[0].id
-      this._stageService.getProductStages(p.items[0].id)
-      .subscribe(result => {
-        this.stages = result.items
-        this.selectedDuration = 'Weekly'
-        this.selectedStage = this.stages[0].id
-        this._dataSharingSerivce.filterDetailedDashboard.next({duration: this.selectedDuration, product: this.selectedProduct, stage: this.selectedStage})
-      });
+      this.getStages(this.selectedProduct, true)
+      this.selectedDuration = 'Weekly'
+      this.apply()
     })
+  }
+
+  getStages(pId, apply) {
+    this._stageService.getProductStages(pId)
+    .subscribe(result => {
+      this.stages = result.items
+      this.selectedStage = this.stages[0].id
+      if (apply) {
+        this.apply()
+      }
+    });
   }
 
   apply() {
@@ -50,5 +57,9 @@ export class DetailedDashboardComponent extends AppComponentBase implements OnIn
       return
     }
     this._dataSharingSerivce.filterDetailedDashboard.next({duration: this.selectedDuration, product: this.selectedProduct, stage: this.selectedStage})
+  }
+
+  productChanged(id) {
+    this.getStages(id, false)
   }
 }

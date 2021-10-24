@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { OverviewDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
 
 declare function renderCharts(selector, options);
 
@@ -54,7 +54,7 @@ export class DefectiveProductsComponent implements OnInit {
 
   chart
 
-  constructor(private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: HomeServiceProxy) { }
+  constructor(private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: OverviewDashboardServiceProxy) { }
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterOverviewDashboard.subscribe(filter => {

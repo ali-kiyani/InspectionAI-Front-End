@@ -1,6 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { DefectTrendDto, HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { DetailedDashboardServiceProxy, OverviewDefectTrendDto } from '@shared/service-proxies/service-proxies';
 import * as moment from 'moment';
 
 declare function renderCharts(selector, options);
@@ -13,7 +13,7 @@ declare function renderCharts(selector, options);
 export class DefectsTrendComponent implements OnInit, AfterViewChecked {
 
   chart
-  trend: DefectTrendDto
+  trend: OverviewDefectTrendDto
   isLoaded = false;
   optionsArea = {
     chart: {
@@ -34,10 +34,7 @@ export class DefectsTrendComponent implements OnInit, AfterViewChecked {
       labels: {
         formatter: function (value: Date, timestamp) {
           if (value) {
-            let d = new Date(value)
-            d.setDate(d.getDate() + 1)
-            let time = d.toISOString().split('T')[0]
-            return time
+            return moment(value).format('DD-MM-YY')
           }
         }, 
       }
@@ -51,7 +48,7 @@ export class DefectsTrendComponent implements OnInit, AfterViewChecked {
   
   }
 
-  constructor(private _homeService: HomeServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) {
+  constructor(private _homeService: DetailedDashboardServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) {
 
    }
   ngAfterViewChecked(): void {
@@ -66,14 +63,13 @@ export class DefectsTrendComponent implements OnInit, AfterViewChecked {
           this.chart.destroy()
         }
       }
-      this._homeService.getDefectTrend(filter.duration, filter.product, filter.stage, 0)
+      this._homeService.getDefectTrend(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
         this.optionsArea.series = []
         this.optionsArea.series.push({name: 'All', data: result.all})
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))
         this.optionsArea.xaxis.categories = result.labels
         this.chart = renderCharts("#defectstrend", this.optionsArea);
-        console.log('loaded with: ' ,filter.duration, filter.stage)
         this.optionsArea.series.forEach(x => {
           if (x.name !== 'All') {
             //chart.toggleSeries(x.name)

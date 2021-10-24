@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { GeneralInsightsDto, HomeServiceProxy } from '../../../../shared/service-proxies/service-proxies';
+import { OverviewDashboardServiceProxy, OverviewGeneralInsightsDto } from '../../../../shared/service-proxies/service-proxies';
 
 declare function renderCharts(selector, options);
 
@@ -11,7 +11,7 @@ declare function renderCharts(selector, options);
 })
 export class ProductOverviewComponent implements OnInit {
 
-  insights = new GeneralInsightsDto();
+  insights = new OverviewGeneralInsightsDto();
   loaded = false
   spark1 = {
     chart: {
@@ -180,7 +180,7 @@ export class ProductOverviewComponent implements OnInit {
   chart1
   chart2
   chart3
-  constructor(injector: Injector, private _homeService: HomeServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
+  constructor(injector: Injector, private _homeService: OverviewDashboardServiceProxy, private _dataSharingSerivce: DataSharingServiceProxies) { }
 
   ngOnInit(): void {
     this.insights.totalDefects = 0;
@@ -196,7 +196,7 @@ export class ProductOverviewComponent implements OnInit {
             this.chart3.destroy()
           }
       }
-      this._homeService.getGeneralInsights(filter.duration, 0, 0, 2)
+      this._homeService.getGeneralInsights(filter.duration)
       .subscribe(result => {
         this.insights = result;
         this.spark1.labels = result.labels

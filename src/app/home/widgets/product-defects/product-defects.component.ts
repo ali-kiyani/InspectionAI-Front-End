@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
-import { HomeServiceProxy } from '@shared/service-proxies/service-proxies';
+import { OverviewDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '../../../../shared/app-component-base';
 
 declare function renderCharts(selector, options);
@@ -40,7 +40,7 @@ export class ProductDefectsComponent extends AppComponentBase implements OnInit 
 
   chart
 
-  constructor(injector: Injector, private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: HomeServiceProxy) {
+  constructor(injector: Injector, private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: OverviewDashboardServiceProxy) {
     super(injector);
   }
 
