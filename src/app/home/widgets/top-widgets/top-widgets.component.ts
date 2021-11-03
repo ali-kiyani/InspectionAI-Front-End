@@ -19,7 +19,6 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
   spark1 = {
     chart: {
       id: 'spark1',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {
@@ -72,7 +71,6 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
   spark2 = {
     chart: {
       id: 'spark2',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {
@@ -125,7 +123,6 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
   spark3 = {
     chart: {
       id: 'spark3',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {

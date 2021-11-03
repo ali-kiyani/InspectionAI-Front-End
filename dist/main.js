@@ -145,6 +145,7 @@ var AppInitializer = /** @class */ (function () {
         })
             .subscribe(function (response) {
             var result = response.result;
+            debugger;
             (0,lodash_es__WEBPACK_IMPORTED_MODULE_6__.default)(abp, result);
             abp.clock.provider = _this.getCurrentClockProvider(result.clock.provider);
             moment_timezone__WEBPACK_IMPORTED_MODULE_0__.locale(abp.localization.currentLanguage.name);
@@ -1506,6 +1507,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AuthenticateModel": function() { return /* binding */ AuthenticateModel; },
 /* harmony export */   "AuthenticateResultModel": function() { return /* binding */ AuthenticateResultModel; },
 /* harmony export */   "ChangePasswordDto": function() { return /* binding */ ChangePasswordDto; },
+/* harmony export */   "ChangeRefreshTimeDto": function() { return /* binding */ ChangeRefreshTimeDto; },
 /* harmony export */   "ChangeUiThemeInput": function() { return /* binding */ ChangeUiThemeInput; },
 /* harmony export */   "ChangeUserLanguageDto": function() { return /* binding */ ChangeUserLanguageDto; },
 /* harmony export */   "CreateAssemblyDetectionDto": function() { return /* binding */ CreateAssemblyDetectionDto; },
@@ -1833,6 +1835,71 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
     };
     /**
+     * @param body (optional)
+     * @return Success
+     */
+    AssemblyDetectionServiceProxy.prototype.addBulkDetections = function (body) {
+        var _this = this;
+        var url_ = this.baseUrl + "/api/services/app/AssemblyDetection/AddBulkDetections";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(body);
+        var options_ = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+        return this.http.request("post", url_, options_).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (response_) {
+            return _this.processAddBulkDetections(response_);
+        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.catchError)(function (response_) {
+            if (response_ instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponseBase) {
+                try {
+                    return _this.processAddBulkDetections(response_);
+                }
+                catch (e) {
+                    return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(e);
+                }
+            }
+            else
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(response_);
+        }));
+    };
+    AssemblyDetectionServiceProxy.prototype.processAddBulkDetections = function (response) {
+        var e_4, _a;
+        var status = response.status;
+        var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
+            response.error instanceof Blob ? response.error : undefined;
+        var _headers = {};
+        if (response.headers) {
+            try {
+                for (var _b = __values(response.headers.keys()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var key = _c.value;
+                    _headers[key] = response.headers.get(key);
+                }
+            }
+            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_4) throw e_4.error; }
+            }
+        }
+        if (status === 200) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
+            }));
+        }
+        else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
+    };
+    /**
      * @param id (optional)
      * @return Success
      */
@@ -1867,7 +1934,7 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         }));
     };
     AssemblyDetectionServiceProxy.prototype.processGet = function (response) {
-        var e_4, _a;
+        var e_5, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -1880,12 +1947,12 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+            catch (e_5_1) { e_5 = { error: e_5_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_4) throw e_4.error; }
+                finally { if (e_5) throw e_5.error; }
             }
         }
         if (status === 200) {
@@ -1943,7 +2010,7 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         }));
     };
     AssemblyDetectionServiceProxy.prototype.processGetAll = function (response) {
-        var e_5, _a;
+        var e_6, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -1956,12 +2023,12 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+            catch (e_6_1) { e_6 = { error: e_6_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_5) throw e_5.error; }
+                finally { if (e_6) throw e_6.error; }
             }
         }
         if (status === 200) {
@@ -2013,7 +2080,7 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         }));
     };
     AssemblyDetectionServiceProxy.prototype.processCreate = function (response) {
-        var e_6, _a;
+        var e_7, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2026,12 +2093,12 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_6_1) { e_6 = { error: e_6_1 }; }
+            catch (e_7_1) { e_7 = { error: e_7_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_6) throw e_6.error; }
+                finally { if (e_7) throw e_7.error; }
             }
         }
         if (status === 200) {
@@ -2083,7 +2150,7 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         }));
     };
     AssemblyDetectionServiceProxy.prototype.processUpdate = function (response) {
-        var e_7, _a;
+        var e_8, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2096,12 +2163,12 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_7_1) { e_7 = { error: e_7_1 }; }
+            catch (e_8_1) { e_8 = { error: e_8_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_7) throw e_7.error; }
+                finally { if (e_8) throw e_8.error; }
             }
         }
         if (status === 200) {
@@ -2152,7 +2219,7 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
         }));
     };
     AssemblyDetectionServiceProxy.prototype.processDelete = function (response) {
-        var e_8, _a;
+        var e_9, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -2164,12 +2231,12 @@ var AssemblyDetectionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_8_1) { e_8 = { error: e_8_1 }; }
+            catch (e_9_1) { e_9 = { error: e_9_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_8) throw e_8.error; }
+                finally { if (e_9) throw e_9.error; }
             }
         }
         if (status === 200) {
@@ -2228,7 +2295,7 @@ var ConfigurationServiceProxy = /** @class */ (function () {
         }));
     };
     ConfigurationServiceProxy.prototype.processChangeUiTheme = function (response) {
-        var e_9, _a;
+        var e_10, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -2240,12 +2307,12 @@ var ConfigurationServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_9_1) { e_9 = { error: e_9_1 }; }
+            catch (e_10_1) { e_10 = { error: e_10_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_9) throw e_9.error; }
+                finally { if (e_10) throw e_10.error; }
             }
         }
         if (status === 200) {
@@ -2316,7 +2383,7 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     DetailedDashboardServiceProxy.prototype.processGetGeneralInsights = function (response) {
-        var e_10, _a;
+        var e_11, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2329,12 +2396,12 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_10_1) { e_10 = { error: e_10_1 }; }
+            catch (e_11_1) { e_11 = { error: e_11_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_10) throw e_10.error; }
+                finally { if (e_11) throw e_11.error; }
             }
         }
         if (status === 200) {
@@ -2397,7 +2464,7 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     DetailedDashboardServiceProxy.prototype.processGetDefectTrend = function (response) {
-        var e_11, _a;
+        var e_12, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2410,12 +2477,12 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_11_1) { e_11 = { error: e_11_1 }; }
+            catch (e_12_1) { e_12 = { error: e_12_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_11) throw e_11.error; }
+                finally { if (e_12) throw e_12.error; }
             }
         }
         if (status === 200) {
@@ -2478,7 +2545,7 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     DetailedDashboardServiceProxy.prototype.processGetRevenueLoss = function (response) {
-        var e_12, _a;
+        var e_13, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2491,12 +2558,12 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_12_1) { e_12 = { error: e_12_1 }; }
+            catch (e_13_1) { e_13 = { error: e_13_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_12) throw e_12.error; }
+                finally { if (e_13) throw e_13.error; }
             }
         }
         if (status === 200) {
@@ -2559,7 +2626,7 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     DetailedDashboardServiceProxy.prototype.processGetAssemblyDefects = function (response) {
-        var e_13, _a;
+        var e_14, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2572,12 +2639,12 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_13_1) { e_13 = { error: e_13_1 }; }
+            catch (e_14_1) { e_14 = { error: e_14_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_13) throw e_13.error; }
+                finally { if (e_14) throw e_14.error; }
             }
         }
         if (status === 200) {
@@ -2640,7 +2707,7 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     DetailedDashboardServiceProxy.prototype.processGetDefectiveRatio = function (response) {
-        var e_14, _a;
+        var e_15, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2653,12 +2720,12 @@ var DetailedDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_14_1) { e_14 = { error: e_14_1 }; }
+            catch (e_15_1) { e_15 = { error: e_15_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_14) throw e_14.error; }
+                finally { if (e_15) throw e_15.error; }
             }
         }
         if (status === 200) {
@@ -2687,6 +2754,81 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
+    /**
+     * @param randLimit (optional)
+     * @param from (optional)
+     * @param to (optional)
+     * @return Success
+     */
+    OverviewDashboardServiceProxy.prototype.fillGoodData = function (randLimit, from, to) {
+        var _this = this;
+        var url_ = this.baseUrl + "/api/services/app/OverviewDashboard/FillGoodData?";
+        if (randLimit === null)
+            throw new Error("The parameter 'randLimit' cannot be null.");
+        else if (randLimit !== undefined)
+            url_ += "randLimit=" + encodeURIComponent("" + randLimit) + "&";
+        if (from === null)
+            throw new Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toJSON() : "") + "&";
+        if (to === null)
+            throw new Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toJSON() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            observe: "response",
+            responseType: "blob",
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpHeaders({})
+        };
+        return this.http.request("post", url_, options_).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (response_) {
+            return _this.processFillGoodData(response_);
+        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.catchError)(function (response_) {
+            if (response_ instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponseBase) {
+                try {
+                    return _this.processFillGoodData(response_);
+                }
+                catch (e) {
+                    return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(e);
+                }
+            }
+            else
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(response_);
+        }));
+    };
+    OverviewDashboardServiceProxy.prototype.processFillGoodData = function (response) {
+        var e_16, _a;
+        var status = response.status;
+        var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
+            response.error instanceof Blob ? response.error : undefined;
+        var _headers = {};
+        if (response.headers) {
+            try {
+                for (var _b = __values(response.headers.keys()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var key = _c.value;
+                    _headers[key] = response.headers.get(key);
+                }
+            }
+            catch (e_16_1) { e_16 = { error: e_16_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_16) throw e_16.error; }
+            }
+        }
+        if (status === 200) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
+            }));
+        }
+        else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
+    };
     /**
      * @param step (optional)
      * @param perDayCount (optional)
@@ -2735,7 +2877,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processFillData = function (response) {
-        var e_15, _a;
+        var e_17, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -2747,12 +2889,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_15_1) { e_15 = { error: e_15_1 }; }
+            catch (e_17_1) { e_17 = { error: e_17_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_15) throw e_15.error; }
+                finally { if (e_17) throw e_17.error; }
             }
         }
         if (status === 200) {
@@ -2802,7 +2944,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processGetGeneralInsights = function (response) {
-        var e_16, _a;
+        var e_18, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2815,12 +2957,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_16_1) { e_16 = { error: e_16_1 }; }
+            catch (e_18_1) { e_18 = { error: e_18_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_16) throw e_16.error; }
+                finally { if (e_18) throw e_18.error; }
             }
         }
         if (status === 200) {
@@ -2873,7 +3015,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processGetProductRevenueLoss = function (response) {
-        var e_17, _a;
+        var e_19, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2886,12 +3028,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_17_1) { e_17 = { error: e_17_1 }; }
+            catch (e_19_1) { e_19 = { error: e_19_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_17) throw e_17.error; }
+                finally { if (e_19) throw e_19.error; }
             }
         }
         if (status === 200) {
@@ -2944,7 +3086,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processGetProductDefectRatio = function (response) {
-        var e_18, _a;
+        var e_20, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -2957,12 +3099,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_18_1) { e_18 = { error: e_18_1 }; }
+            catch (e_20_1) { e_20 = { error: e_20_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_18) throw e_18.error; }
+                finally { if (e_20) throw e_20.error; }
             }
         }
         if (status === 200) {
@@ -3015,7 +3157,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processGetDefectiveProducts = function (response) {
-        var e_19, _a;
+        var e_21, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3028,12 +3170,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_19_1) { e_19 = { error: e_19_1 }; }
+            catch (e_21_1) { e_21 = { error: e_21_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_19) throw e_19.error; }
+                finally { if (e_21) throw e_21.error; }
             }
         }
         if (status === 200) {
@@ -3086,7 +3228,7 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
         }));
     };
     OverviewDashboardServiceProxy.prototype.processGetProductDefectTrend = function (response) {
-        var e_20, _a;
+        var e_22, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3099,12 +3241,12 @@ var OverviewDashboardServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_20_1) { e_20 = { error: e_20_1 }; }
+            catch (e_22_1) { e_22 = { error: e_22_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_20) throw e_20.error; }
+                finally { if (e_22) throw e_22.error; }
             }
         }
         if (status === 200) {
@@ -3163,7 +3305,7 @@ var ProductServiceProxy = /** @class */ (function () {
         }));
     };
     ProductServiceProxy.prototype.processGetAllProducts = function (response) {
-        var e_21, _a;
+        var e_23, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3176,12 +3318,12 @@ var ProductServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_21_1) { e_21 = { error: e_21_1 }; }
+            catch (e_23_1) { e_23 = { error: e_23_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_21) throw e_21.error; }
+                finally { if (e_23) throw e_23.error; }
             }
         }
         if (status === 200) {
@@ -3244,7 +3386,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processCreate = function (response) {
-        var e_22, _a;
+        var e_24, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3257,12 +3399,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_22_1) { e_22 = { error: e_22_1 }; }
+            catch (e_24_1) { e_24 = { error: e_24_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_22) throw e_22.error; }
+                finally { if (e_24) throw e_24.error; }
             }
         }
         if (status === 200) {
@@ -3315,7 +3457,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processGetRoles = function (response) {
-        var e_23, _a;
+        var e_25, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3328,12 +3470,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_23_1) { e_23 = { error: e_23_1 }; }
+            catch (e_25_1) { e_25 = { error: e_25_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_23) throw e_23.error; }
+                finally { if (e_25) throw e_25.error; }
             }
         }
         if (status === 200) {
@@ -3385,7 +3527,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processUpdate = function (response) {
-        var e_24, _a;
+        var e_26, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3398,12 +3540,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_24_1) { e_24 = { error: e_24_1 }; }
+            catch (e_26_1) { e_26 = { error: e_26_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_24) throw e_24.error; }
+                finally { if (e_26) throw e_26.error; }
             }
         }
         if (status === 200) {
@@ -3454,7 +3596,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processDelete = function (response) {
-        var e_25, _a;
+        var e_27, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -3466,12 +3608,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_25_1) { e_25 = { error: e_25_1 }; }
+            catch (e_27_1) { e_27 = { error: e_27_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_25) throw e_25.error; }
+                finally { if (e_27) throw e_27.error; }
             }
         }
         if (status === 200) {
@@ -3516,7 +3658,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processGetAllPermissions = function (response) {
-        var e_26, _a;
+        var e_28, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3529,12 +3671,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_26_1) { e_26 = { error: e_26_1 }; }
+            catch (e_28_1) { e_28 = { error: e_28_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_26) throw e_26.error; }
+                finally { if (e_28) throw e_28.error; }
             }
         }
         if (status === 200) {
@@ -3587,7 +3729,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processGetRoleForEdit = function (response) {
-        var e_27, _a;
+        var e_29, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3600,12 +3742,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_27_1) { e_27 = { error: e_27_1 }; }
+            catch (e_29_1) { e_29 = { error: e_29_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_27) throw e_27.error; }
+                finally { if (e_29) throw e_29.error; }
             }
         }
         if (status === 200) {
@@ -3658,7 +3800,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processGet = function (response) {
-        var e_28, _a;
+        var e_30, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3671,12 +3813,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_28_1) { e_28 = { error: e_28_1 }; }
+            catch (e_30_1) { e_30 = { error: e_30_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_28) throw e_28.error; }
+                finally { if (e_30) throw e_30.error; }
             }
         }
         if (status === 200) {
@@ -3739,7 +3881,7 @@ var RoleServiceProxy = /** @class */ (function () {
         }));
     };
     RoleServiceProxy.prototype.processGetAll = function (response) {
-        var e_29, _a;
+        var e_31, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3752,12 +3894,12 @@ var RoleServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_29_1) { e_29 = { error: e_29_1 }; }
+            catch (e_31_1) { e_31 = { error: e_31_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_29) throw e_29.error; }
+                finally { if (e_31) throw e_31.error; }
             }
         }
         if (status === 200) {
@@ -3816,7 +3958,7 @@ var SessionServiceProxy = /** @class */ (function () {
         }));
     };
     SessionServiceProxy.prototype.processGetCurrentLoginInformations = function (response) {
-        var e_30, _a;
+        var e_32, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3829,12 +3971,12 @@ var SessionServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_30_1) { e_30 = { error: e_30_1 }; }
+            catch (e_32_1) { e_32 = { error: e_32_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_30) throw e_30.error; }
+                finally { if (e_32) throw e_32.error; }
             }
         }
         if (status === 200) {
@@ -3893,7 +4035,7 @@ var StageServiceProxy = /** @class */ (function () {
         }));
     };
     StageServiceProxy.prototype.processGetAllStages = function (response) {
-        var e_31, _a;
+        var e_33, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3906,12 +4048,12 @@ var StageServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_31_1) { e_31 = { error: e_31_1 }; }
+            catch (e_33_1) { e_33 = { error: e_33_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_31) throw e_31.error; }
+                finally { if (e_33) throw e_33.error; }
             }
         }
         if (status === 200) {
@@ -3964,7 +4106,7 @@ var StageServiceProxy = /** @class */ (function () {
         }));
     };
     StageServiceProxy.prototype.processGetProductStages = function (response) {
-        var e_32, _a;
+        var e_34, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -3977,12 +4119,12 @@ var StageServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_32_1) { e_32 = { error: e_32_1 }; }
+            catch (e_34_1) { e_34 = { error: e_34_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_32) throw e_32.error; }
+                finally { if (e_34) throw e_34.error; }
             }
         }
         if (status === 200) {
@@ -4045,7 +4187,7 @@ var TenantServiceProxy = /** @class */ (function () {
         }));
     };
     TenantServiceProxy.prototype.processCreate = function (response) {
-        var e_33, _a;
+        var e_35, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4058,12 +4200,12 @@ var TenantServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_33_1) { e_33 = { error: e_33_1 }; }
+            catch (e_35_1) { e_35 = { error: e_35_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_33) throw e_33.error; }
+                finally { if (e_35) throw e_35.error; }
             }
         }
         if (status === 200) {
@@ -4114,7 +4256,7 @@ var TenantServiceProxy = /** @class */ (function () {
         }));
     };
     TenantServiceProxy.prototype.processDelete = function (response) {
-        var e_34, _a;
+        var e_36, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -4126,12 +4268,12 @@ var TenantServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_34_1) { e_34 = { error: e_34_1 }; }
+            catch (e_36_1) { e_36 = { error: e_36_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_34) throw e_34.error; }
+                finally { if (e_36) throw e_36.error; }
             }
         }
         if (status === 200) {
@@ -4181,7 +4323,7 @@ var TenantServiceProxy = /** @class */ (function () {
         }));
     };
     TenantServiceProxy.prototype.processGet = function (response) {
-        var e_35, _a;
+        var e_37, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4194,12 +4336,12 @@ var TenantServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_35_1) { e_35 = { error: e_35_1 }; }
+            catch (e_37_1) { e_37 = { error: e_37_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_35) throw e_35.error; }
+                finally { if (e_37) throw e_37.error; }
             }
         }
         if (status === 200) {
@@ -4267,7 +4409,7 @@ var TenantServiceProxy = /** @class */ (function () {
         }));
     };
     TenantServiceProxy.prototype.processGetAll = function (response) {
-        var e_36, _a;
+        var e_38, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4280,12 +4422,12 @@ var TenantServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_36_1) { e_36 = { error: e_36_1 }; }
+            catch (e_38_1) { e_38 = { error: e_38_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_36) throw e_36.error; }
+                finally { if (e_38) throw e_38.error; }
             }
         }
         if (status === 200) {
@@ -4337,7 +4479,7 @@ var TenantServiceProxy = /** @class */ (function () {
         }));
     };
     TenantServiceProxy.prototype.processUpdate = function (response) {
-        var e_37, _a;
+        var e_39, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4350,12 +4492,12 @@ var TenantServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_37_1) { e_37 = { error: e_37_1 }; }
+            catch (e_39_1) { e_39 = { error: e_39_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_37) throw e_37.error; }
+                finally { if (e_39) throw e_39.error; }
             }
         }
         if (status === 200) {
@@ -4418,7 +4560,7 @@ var TokenAuthServiceProxy = /** @class */ (function () {
         }));
     };
     TokenAuthServiceProxy.prototype.processAuthenticate = function (response) {
-        var e_38, _a;
+        var e_40, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4431,12 +4573,12 @@ var TokenAuthServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_38_1) { e_38 = { error: e_38_1 }; }
+            catch (e_40_1) { e_40 = { error: e_40_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_38) throw e_38.error; }
+                finally { if (e_40) throw e_40.error; }
             }
         }
         if (status === 200) {
@@ -4484,7 +4626,7 @@ var TokenAuthServiceProxy = /** @class */ (function () {
         }));
     };
     TokenAuthServiceProxy.prototype.processGetExternalAuthenticationProviders = function (response) {
-        var e_39, _a;
+        var e_41, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4497,17 +4639,17 @@ var TokenAuthServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_39_1) { e_39 = { error: e_39_1 }; }
+            catch (e_41_1) { e_41 = { error: e_41_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_39) throw e_39.error; }
+                finally { if (e_41) throw e_41.error; }
             }
         }
         if (status === 200) {
             return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
-                var e_40, _a;
+                var e_42, _a;
                 var result200 = null;
                 var resultData200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
                 if (Array.isArray(resultData200)) {
@@ -4518,12 +4660,12 @@ var TokenAuthServiceProxy = /** @class */ (function () {
                             result200.push(ExternalLoginProviderInfoModel.fromJS(item));
                         }
                     }
-                    catch (e_40_1) { e_40 = { error: e_40_1 }; }
+                    catch (e_42_1) { e_42 = { error: e_42_1 }; }
                     finally {
                         try {
                             if (resultData200_1_1 && !resultData200_1_1.done && (_a = resultData200_1.return)) _a.call(resultData200_1);
                         }
-                        finally { if (e_40) throw e_40.error; }
+                        finally { if (e_42) throw e_42.error; }
                     }
                 }
                 return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(result200);
@@ -4570,7 +4712,7 @@ var TokenAuthServiceProxy = /** @class */ (function () {
         }));
     };
     TokenAuthServiceProxy.prototype.processExternalAuthenticate = function (response) {
-        var e_41, _a;
+        var e_43, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4583,12 +4725,12 @@ var TokenAuthServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_41_1) { e_41 = { error: e_41_1 }; }
+            catch (e_43_1) { e_43 = { error: e_43_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_41) throw e_41.error; }
+                finally { if (e_43) throw e_43.error; }
             }
         }
         if (status === 200) {
@@ -4651,7 +4793,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processCreate = function (response) {
-        var e_42, _a;
+        var e_44, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4664,12 +4806,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_42_1) { e_42 = { error: e_42_1 }; }
+            catch (e_44_1) { e_44 = { error: e_44_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_42) throw e_42.error; }
+                finally { if (e_44) throw e_44.error; }
             }
         }
         if (status === 200) {
@@ -4721,7 +4863,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processUpdate = function (response) {
-        var e_43, _a;
+        var e_45, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4734,12 +4876,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_43_1) { e_43 = { error: e_43_1 }; }
+            catch (e_45_1) { e_45 = { error: e_45_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_43) throw e_43.error; }
+                finally { if (e_45) throw e_45.error; }
             }
         }
         if (status === 200) {
@@ -4790,7 +4932,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processDelete = function (response) {
-        var e_44, _a;
+        var e_46, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -4802,12 +4944,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_44_1) { e_44 = { error: e_44_1 }; }
+            catch (e_46_1) { e_46 = { error: e_46_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_44) throw e_44.error; }
+                finally { if (e_46) throw e_46.error; }
             }
         }
         if (status === 200) {
@@ -4855,7 +4997,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processActivate = function (response) {
-        var e_45, _a;
+        var e_47, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -4867,12 +5009,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_45_1) { e_45 = { error: e_45_1 }; }
+            catch (e_47_1) { e_47 = { error: e_47_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_45) throw e_45.error; }
+                finally { if (e_47) throw e_47.error; }
             }
         }
         if (status === 200) {
@@ -4920,7 +5062,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processDeActivate = function (response) {
-        var e_46, _a;
+        var e_48, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -4932,12 +5074,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_46_1) { e_46 = { error: e_46_1 }; }
+            catch (e_48_1) { e_48 = { error: e_48_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_46) throw e_46.error; }
+                finally { if (e_48) throw e_48.error; }
             }
         }
         if (status === 200) {
@@ -4982,7 +5124,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processGetRoles = function (response) {
-        var e_47, _a;
+        var e_49, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -4995,12 +5137,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_47_1) { e_47 = { error: e_47_1 }; }
+            catch (e_49_1) { e_49 = { error: e_49_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_47) throw e_47.error; }
+                finally { if (e_49) throw e_49.error; }
             }
         }
         if (status === 200) {
@@ -5051,7 +5193,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processChangeLanguage = function (response) {
-        var e_48, _a;
+        var e_50, _a;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
             response.error instanceof Blob ? response.error : undefined;
@@ -5063,12 +5205,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_48_1) { e_48 = { error: e_48_1 }; }
+            catch (e_50_1) { e_50 = { error: e_50_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_48) throw e_48.error; }
+                finally { if (e_50) throw e_50.error; }
             }
         }
         if (status === 200) {
@@ -5117,7 +5259,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processChangePassword = function (response) {
-        var e_49, _a;
+        var e_51, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -5130,12 +5272,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_49_1) { e_49 = { error: e_49_1 }; }
+            catch (e_51_1) { e_51 = { error: e_51_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_49) throw e_49.error; }
+                finally { if (e_51) throw e_51.error; }
             }
         }
         if (status === 200) {
@@ -5187,7 +5329,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processResetPassword = function (response) {
-        var e_50, _a;
+        var e_52, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -5200,12 +5342,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_50_1) { e_50 = { error: e_50_1 }; }
+            catch (e_52_1) { e_52 = { error: e_52_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_50) throw e_50.error; }
+                finally { if (e_52) throw e_52.error; }
             }
         }
         if (status === 200) {
@@ -5214,6 +5356,71 @@ var UserServiceProxy = /** @class */ (function () {
                 var resultData200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : null;
                 return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(result200);
+            }));
+        }
+        else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
+    };
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    UserServiceProxy.prototype.changeRefreshTimeSettings = function (body) {
+        var _this = this;
+        var url_ = this.baseUrl + "/api/services/app/User/ChangeRefreshTimeSettings";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(body);
+        var options_ = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+        return this.http.request("post", url_, options_).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (response_) {
+            return _this.processChangeRefreshTimeSettings(response_);
+        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.catchError)(function (response_) {
+            if (response_ instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponseBase) {
+                try {
+                    return _this.processChangeRefreshTimeSettings(response_);
+                }
+                catch (e) {
+                    return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(e);
+                }
+            }
+            else
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.throwError)(response_);
+        }));
+    };
+    UserServiceProxy.prototype.processChangeRefreshTimeSettings = function (response) {
+        var e_53, _a;
+        var status = response.status;
+        var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
+            response.error instanceof Blob ? response.error : undefined;
+        var _headers = {};
+        if (response.headers) {
+            try {
+                for (var _b = __values(response.headers.keys()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var key = _c.value;
+                    _headers[key] = response.headers.get(key);
+                }
+            }
+            catch (e_53_1) { e_53 = { error: e_53_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_53) throw e_53.error; }
+            }
+        }
+        if (status === 200) {
+            return blobToText(responseBlob).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.mergeMap)(function (_responseText) {
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(null);
             }));
         }
         else if (status !== 200 && status !== 204) {
@@ -5258,7 +5465,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processGet = function (response) {
-        var e_51, _a;
+        var e_54, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -5271,12 +5478,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_51_1) { e_51 = { error: e_51_1 }; }
+            catch (e_54_1) { e_54 = { error: e_54_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_51) throw e_51.error; }
+                finally { if (e_54) throw e_54.error; }
             }
         }
         if (status === 200) {
@@ -5344,7 +5551,7 @@ var UserServiceProxy = /** @class */ (function () {
         }));
     };
     UserServiceProxy.prototype.processGetAll = function (response) {
-        var e_52, _a;
+        var e_55, _a;
         var _this = this;
         var status = response.status;
         var responseBlob = response instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__.HttpResponse ? response.body :
@@ -5357,12 +5564,12 @@ var UserServiceProxy = /** @class */ (function () {
                     _headers[key] = response.headers.get(key);
                 }
             }
-            catch (e_52_1) { e_52 = { error: e_52_1 }; }
+            catch (e_55_1) { e_55 = { error: e_55_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_52) throw e_52.error; }
+                finally { if (e_55) throw e_55.error; }
             }
         }
         if (status === 200) {
@@ -5451,7 +5658,7 @@ var AssemblyDefectsDto = /** @class */ (function () {
             this.stageId = _data["stageId"];
             this.defectId = _data["defectId"];
             this.confidence = _data["confidence"];
-            this.imageUrl = _data["imageUrl"];
+            this.detectionTime = _data["detectionTime"] ? moment__WEBPACK_IMPORTED_MODULE_0__(_data["detectionTime"].toString()) : undefined;
         }
     };
     AssemblyDefectsDto.fromJS = function (data) {
@@ -5467,7 +5674,7 @@ var AssemblyDefectsDto = /** @class */ (function () {
         data["stageId"] = this.stageId;
         data["defectId"] = this.defectId;
         data["confidence"] = this.confidence;
-        data["imageUrl"] = this.imageUrl;
+        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : undefined;
         return data;
     };
     AssemblyDefectsDto.prototype.clone = function () {
@@ -5489,7 +5696,7 @@ var AssemblyDetectionDto = /** @class */ (function () {
         }
     }
     AssemblyDetectionDto.prototype.init = function (_data) {
-        var e_53, _a;
+        var e_56, _a;
         if (_data) {
             this.id = _data["id"];
             this.assemblyLineId = _data["assemblyLineId"];
@@ -5497,6 +5704,7 @@ var AssemblyDetectionDto = /** @class */ (function () {
             this.stageId = _data["stageId"];
             this.detectionTime = _data["detectionTime"] ? moment__WEBPACK_IMPORTED_MODULE_0__(_data["detectionTime"].toString()) : undefined;
             this.defectsCount = _data["defectsCount"];
+            this.imageUrl = _data["imageUrl"];
             if (Array.isArray(_data["assemblyDefects"])) {
                 this.assemblyDefects = [];
                 try {
@@ -5505,12 +5713,12 @@ var AssemblyDetectionDto = /** @class */ (function () {
                         this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
                     }
                 }
-                catch (e_53_1) { e_53 = { error: e_53_1 }; }
+                catch (e_56_1) { e_56 = { error: e_56_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_53) throw e_53.error; }
+                    finally { if (e_56) throw e_56.error; }
                 }
             }
         }
@@ -5522,7 +5730,7 @@ var AssemblyDetectionDto = /** @class */ (function () {
         return result;
     };
     AssemblyDetectionDto.prototype.toJSON = function (data) {
-        var e_54, _a;
+        var e_57, _a;
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["assemblyLineId"] = this.assemblyLineId;
@@ -5530,6 +5738,7 @@ var AssemblyDetectionDto = /** @class */ (function () {
         data["stageId"] = this.stageId;
         data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : undefined;
         data["defectsCount"] = this.defectsCount;
+        data["imageUrl"] = this.imageUrl;
         if (Array.isArray(this.assemblyDefects)) {
             data["assemblyDefects"] = [];
             try {
@@ -5538,12 +5747,12 @@ var AssemblyDetectionDto = /** @class */ (function () {
                     data["assemblyDefects"].push(item.toJSON());
                 }
             }
-            catch (e_54_1) { e_54 = { error: e_54_1 }; }
+            catch (e_57_1) { e_57 = { error: e_57_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_54) throw e_54.error; }
+                finally { if (e_57) throw e_57.error; }
             }
         }
         return data;
@@ -5567,7 +5776,7 @@ var AssemblyDetectionDtoPagedResultDto = /** @class */ (function () {
         }
     }
     AssemblyDetectionDtoPagedResultDto.prototype.init = function (_data) {
-        var e_55, _a;
+        var e_58, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -5577,12 +5786,12 @@ var AssemblyDetectionDtoPagedResultDto = /** @class */ (function () {
                         this.items.push(AssemblyDetectionDto.fromJS(item));
                     }
                 }
-                catch (e_55_1) { e_55 = { error: e_55_1 }; }
+                catch (e_58_1) { e_58 = { error: e_58_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_55) throw e_55.error; }
+                    finally { if (e_58) throw e_58.error; }
                 }
             }
             this.totalCount = _data["totalCount"];
@@ -5595,7 +5804,7 @@ var AssemblyDetectionDtoPagedResultDto = /** @class */ (function () {
         return result;
     };
     AssemblyDetectionDtoPagedResultDto.prototype.toJSON = function (data) {
-        var e_56, _a;
+        var e_59, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -5605,12 +5814,12 @@ var AssemblyDetectionDtoPagedResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_56_1) { e_56 = { error: e_56_1 }; }
+            catch (e_59_1) { e_59 = { error: e_59_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_56) throw e_56.error; }
+                finally { if (e_59) throw e_59.error; }
             }
         }
         data["totalCount"] = this.totalCount;
@@ -5739,6 +5948,40 @@ var ChangePasswordDto = /** @class */ (function () {
     return ChangePasswordDto;
 }());
 
+var ChangeRefreshTimeDto = /** @class */ (function () {
+    function ChangeRefreshTimeDto(data) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    this[property] = data[property];
+            }
+        }
+    }
+    ChangeRefreshTimeDto.prototype.init = function (_data) {
+        if (_data) {
+            this.refreshTime = _data["refreshTime"];
+        }
+    };
+    ChangeRefreshTimeDto.fromJS = function (data) {
+        data = typeof data === 'object' ? data : {};
+        var result = new ChangeRefreshTimeDto();
+        result.init(data);
+        return result;
+    };
+    ChangeRefreshTimeDto.prototype.toJSON = function (data) {
+        data = typeof data === 'object' ? data : {};
+        data["refreshTime"] = this.refreshTime;
+        return data;
+    };
+    ChangeRefreshTimeDto.prototype.clone = function () {
+        var json = this.toJSON();
+        var result = new ChangeRefreshTimeDto();
+        result.init(json);
+        return result;
+    };
+    return ChangeRefreshTimeDto;
+}());
+
 var ChangeUiThemeInput = /** @class */ (function () {
     function ChangeUiThemeInput(data) {
         if (data) {
@@ -5817,7 +6060,7 @@ var CreateAssemblyDetectionDto = /** @class */ (function () {
         }
     }
     CreateAssemblyDetectionDto.prototype.init = function (_data) {
-        var e_57, _a;
+        var e_60, _a;
         if (_data) {
             this.assemblyLineId = _data["assemblyLineId"];
             this.productId = _data["productId"];
@@ -5832,12 +6075,12 @@ var CreateAssemblyDetectionDto = /** @class */ (function () {
                         this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
                     }
                 }
-                catch (e_57_1) { e_57 = { error: e_57_1 }; }
+                catch (e_60_1) { e_60 = { error: e_60_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_57) throw e_57.error; }
+                    finally { if (e_60) throw e_60.error; }
                 }
             }
         }
@@ -5849,7 +6092,7 @@ var CreateAssemblyDetectionDto = /** @class */ (function () {
         return result;
     };
     CreateAssemblyDetectionDto.prototype.toJSON = function (data) {
-        var e_58, _a;
+        var e_61, _a;
         data = typeof data === 'object' ? data : {};
         data["assemblyLineId"] = this.assemblyLineId;
         data["productId"] = this.productId;
@@ -5864,12 +6107,12 @@ var CreateAssemblyDetectionDto = /** @class */ (function () {
                     data["assemblyDefects"].push(item.toJSON());
                 }
             }
-            catch (e_58_1) { e_58 = { error: e_58_1 }; }
+            catch (e_61_1) { e_61 = { error: e_61_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_58) throw e_58.error; }
+                finally { if (e_61) throw e_61.error; }
             }
         }
         return data;
@@ -5893,7 +6136,7 @@ var CreateRoleDto = /** @class */ (function () {
         }
     }
     CreateRoleDto.prototype.init = function (_data) {
-        var e_59, _a;
+        var e_62, _a;
         if (_data) {
             this.name = _data["name"];
             this.displayName = _data["displayName"];
@@ -5907,12 +6150,12 @@ var CreateRoleDto = /** @class */ (function () {
                         this.grantedPermissions.push(item);
                     }
                 }
-                catch (e_59_1) { e_59 = { error: e_59_1 }; }
+                catch (e_62_1) { e_62 = { error: e_62_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_59) throw e_59.error; }
+                    finally { if (e_62) throw e_62.error; }
                 }
             }
         }
@@ -5924,7 +6167,7 @@ var CreateRoleDto = /** @class */ (function () {
         return result;
     };
     CreateRoleDto.prototype.toJSON = function (data) {
-        var e_60, _a;
+        var e_63, _a;
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["displayName"] = this.displayName;
@@ -5938,12 +6181,12 @@ var CreateRoleDto = /** @class */ (function () {
                     data["grantedPermissions"].push(item);
                 }
             }
-            catch (e_60_1) { e_60 = { error: e_60_1 }; }
+            catch (e_63_1) { e_63 = { error: e_63_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_60) throw e_60.error; }
+                finally { if (e_63) throw e_63.error; }
             }
         }
         return data;
@@ -6009,7 +6252,7 @@ var CreateUserDto = /** @class */ (function () {
         }
     }
     CreateUserDto.prototype.init = function (_data) {
-        var e_61, _a;
+        var e_64, _a;
         if (_data) {
             this.userName = _data["userName"];
             this.name = _data["name"];
@@ -6024,12 +6267,12 @@ var CreateUserDto = /** @class */ (function () {
                         this.roleNames.push(item);
                     }
                 }
-                catch (e_61_1) { e_61 = { error: e_61_1 }; }
+                catch (e_64_1) { e_64 = { error: e_64_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_61) throw e_61.error; }
+                    finally { if (e_64) throw e_64.error; }
                 }
             }
             this.password = _data["password"];
@@ -6042,7 +6285,7 @@ var CreateUserDto = /** @class */ (function () {
         return result;
     };
     CreateUserDto.prototype.toJSON = function (data) {
-        var e_62, _a;
+        var e_65, _a;
         data = typeof data === 'object' ? data : {};
         data["userName"] = this.userName;
         data["name"] = this.name;
@@ -6057,12 +6300,12 @@ var CreateUserDto = /** @class */ (function () {
                     data["roleNames"].push(item);
                 }
             }
-            catch (e_62_1) { e_62 = { error: e_62_1 }; }
+            catch (e_65_1) { e_65 = { error: e_65_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_62) throw e_62.error; }
+                finally { if (e_65) throw e_65.error; }
             }
         }
         data["password"] = this.password;
@@ -6087,7 +6330,7 @@ var DetailedAssemblyDefects = /** @class */ (function () {
         }
     }
     DetailedAssemblyDefects.prototype.init = function (_data) {
-        var e_63, _a, e_64, _b, e_65, _c;
+        var e_66, _a, e_67, _b, e_68, _c;
         if (_data) {
             if (Array.isArray(_data["assemblyNames"])) {
                 this.assemblyNames = [];
@@ -6097,12 +6340,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                         this.assemblyNames.push(item);
                     }
                 }
-                catch (e_63_1) { e_63 = { error: e_63_1 }; }
+                catch (e_66_1) { e_66 = { error: e_66_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                     }
-                    finally { if (e_63) throw e_63.error; }
+                    finally { if (e_66) throw e_66.error; }
                 }
             }
             if (Array.isArray(_data["assemblyId"])) {
@@ -6113,12 +6356,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                         this.assemblyId.push(item);
                     }
                 }
-                catch (e_64_1) { e_64 = { error: e_64_1 }; }
+                catch (e_67_1) { e_67 = { error: e_67_1 }; }
                 finally {
                     try {
                         if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                     }
-                    finally { if (e_64) throw e_64.error; }
+                    finally { if (e_67) throw e_67.error; }
                 }
             }
             if (Array.isArray(_data["assemblyDefectsCount"])) {
@@ -6129,12 +6372,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                         this.assemblyDefectsCount.push(item);
                     }
                 }
-                catch (e_65_1) { e_65 = { error: e_65_1 }; }
+                catch (e_68_1) { e_68 = { error: e_68_1 }; }
                 finally {
                     try {
                         if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                     }
-                    finally { if (e_65) throw e_65.error; }
+                    finally { if (e_68) throw e_68.error; }
                 }
             }
         }
@@ -6146,7 +6389,7 @@ var DetailedAssemblyDefects = /** @class */ (function () {
         return result;
     };
     DetailedAssemblyDefects.prototype.toJSON = function (data) {
-        var e_66, _a, e_67, _b, e_68, _c;
+        var e_69, _a, e_70, _b, e_71, _c;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.assemblyNames)) {
             data["assemblyNames"] = [];
@@ -6156,12 +6399,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                     data["assemblyNames"].push(item);
                 }
             }
-            catch (e_66_1) { e_66 = { error: e_66_1 }; }
+            catch (e_69_1) { e_69 = { error: e_69_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                 }
-                finally { if (e_66) throw e_66.error; }
+                finally { if (e_69) throw e_69.error; }
             }
         }
         if (Array.isArray(this.assemblyId)) {
@@ -6172,12 +6415,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                     data["assemblyId"].push(item);
                 }
             }
-            catch (e_67_1) { e_67 = { error: e_67_1 }; }
+            catch (e_70_1) { e_70 = { error: e_70_1 }; }
             finally {
                 try {
                     if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                 }
-                finally { if (e_67) throw e_67.error; }
+                finally { if (e_70) throw e_70.error; }
             }
         }
         if (Array.isArray(this.assemblyDefectsCount)) {
@@ -6188,12 +6431,12 @@ var DetailedAssemblyDefects = /** @class */ (function () {
                     data["assemblyDefectsCount"].push(item);
                 }
             }
-            catch (e_68_1) { e_68 = { error: e_68_1 }; }
+            catch (e_71_1) { e_71 = { error: e_71_1 }; }
             finally {
                 try {
                     if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-                finally { if (e_68) throw e_68.error; }
+                finally { if (e_71) throw e_71.error; }
             }
         }
         return data;
@@ -6217,7 +6460,7 @@ var DetailedDefectiveRatio = /** @class */ (function () {
         }
     }
     DetailedDefectiveRatio.prototype.init = function (_data) {
-        var e_69, _a, e_70, _b;
+        var e_72, _a, e_73, _b;
         if (_data) {
             if (Array.isArray(_data["names"])) {
                 this.names = [];
@@ -6227,12 +6470,12 @@ var DetailedDefectiveRatio = /** @class */ (function () {
                         this.names.push(item);
                     }
                 }
-                catch (e_69_1) { e_69 = { error: e_69_1 }; }
+                catch (e_72_1) { e_72 = { error: e_72_1 }; }
                 finally {
                     try {
                         if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                     }
-                    finally { if (e_69) throw e_69.error; }
+                    finally { if (e_72) throw e_72.error; }
                 }
             }
             if (Array.isArray(_data["count"])) {
@@ -6243,12 +6486,12 @@ var DetailedDefectiveRatio = /** @class */ (function () {
                         this.count.push(item);
                     }
                 }
-                catch (e_70_1) { e_70 = { error: e_70_1 }; }
+                catch (e_73_1) { e_73 = { error: e_73_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                     }
-                    finally { if (e_70) throw e_70.error; }
+                    finally { if (e_73) throw e_73.error; }
                 }
             }
         }
@@ -6260,7 +6503,7 @@ var DetailedDefectiveRatio = /** @class */ (function () {
         return result;
     };
     DetailedDefectiveRatio.prototype.toJSON = function (data) {
-        var e_71, _a, e_72, _b;
+        var e_74, _a, e_75, _b;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.names)) {
             data["names"] = [];
@@ -6270,12 +6513,12 @@ var DetailedDefectiveRatio = /** @class */ (function () {
                     data["names"].push(item);
                 }
             }
-            catch (e_71_1) { e_71 = { error: e_71_1 }; }
+            catch (e_74_1) { e_74 = { error: e_74_1 }; }
             finally {
                 try {
                     if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                 }
-                finally { if (e_71) throw e_71.error; }
+                finally { if (e_74) throw e_74.error; }
             }
         }
         if (Array.isArray(this.count)) {
@@ -6286,12 +6529,12 @@ var DetailedDefectiveRatio = /** @class */ (function () {
                     data["count"].push(item);
                 }
             }
-            catch (e_72_1) { e_72 = { error: e_72_1 }; }
+            catch (e_75_1) { e_75 = { error: e_75_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                 }
-                finally { if (e_72) throw e_72.error; }
+                finally { if (e_75) throw e_75.error; }
             }
         }
         return data;
@@ -6315,7 +6558,7 @@ var DetailedDefectTrendDataDto = /** @class */ (function () {
         }
     }
     DetailedDefectTrendDataDto.prototype.init = function (_data) {
-        var e_73, _a;
+        var e_76, _a;
         if (_data) {
             this.name = _data["name"];
             this.defectId = _data["defectId"];
@@ -6327,12 +6570,12 @@ var DetailedDefectTrendDataDto = /** @class */ (function () {
                         this.data.push(item);
                     }
                 }
-                catch (e_73_1) { e_73 = { error: e_73_1 }; }
+                catch (e_76_1) { e_76 = { error: e_76_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_73) throw e_73.error; }
+                    finally { if (e_76) throw e_76.error; }
                 }
             }
         }
@@ -6344,7 +6587,7 @@ var DetailedDefectTrendDataDto = /** @class */ (function () {
         return result;
     };
     DetailedDefectTrendDataDto.prototype.toJSON = function (data) {
-        var e_74, _a;
+        var e_77, _a;
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["defectId"] = this.defectId;
@@ -6356,12 +6599,12 @@ var DetailedDefectTrendDataDto = /** @class */ (function () {
                     data["data"].push(item);
                 }
             }
-            catch (e_74_1) { e_74 = { error: e_74_1 }; }
+            catch (e_77_1) { e_77 = { error: e_77_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_74) throw e_74.error; }
+                finally { if (e_77) throw e_77.error; }
             }
         }
         return data;
@@ -6385,7 +6628,7 @@ var DetailedDefectTrendDto = /** @class */ (function () {
         }
     }
     DetailedDefectTrendDto.prototype.init = function (_data) {
-        var e_75, _a, e_76, _b, e_77, _c;
+        var e_78, _a, e_79, _b, e_80, _c;
         if (_data) {
             if (Array.isArray(_data["labels"])) {
                 this.labels = [];
@@ -6395,12 +6638,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_75_1) { e_75 = { error: e_75_1 }; }
+                catch (e_78_1) { e_78 = { error: e_78_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                     }
-                    finally { if (e_75) throw e_75.error; }
+                    finally { if (e_78) throw e_78.error; }
                 }
             }
             if (Array.isArray(_data["all"])) {
@@ -6411,12 +6654,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                         this.all.push(item);
                     }
                 }
-                catch (e_76_1) { e_76 = { error: e_76_1 }; }
+                catch (e_79_1) { e_79 = { error: e_79_1 }; }
                 finally {
                     try {
                         if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                     }
-                    finally { if (e_76) throw e_76.error; }
+                    finally { if (e_79) throw e_79.error; }
                 }
             }
             if (Array.isArray(_data["data"])) {
@@ -6427,12 +6670,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                         this.data.push(DetailedDefectTrendDataDto.fromJS(item));
                     }
                 }
-                catch (e_77_1) { e_77 = { error: e_77_1 }; }
+                catch (e_80_1) { e_80 = { error: e_80_1 }; }
                 finally {
                     try {
                         if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                     }
-                    finally { if (e_77) throw e_77.error; }
+                    finally { if (e_80) throw e_80.error; }
                 }
             }
         }
@@ -6444,7 +6687,7 @@ var DetailedDefectTrendDto = /** @class */ (function () {
         return result;
     };
     DetailedDefectTrendDto.prototype.toJSON = function (data) {
-        var e_78, _a, e_79, _b, e_80, _c;
+        var e_81, _a, e_82, _b, e_83, _c;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.labels)) {
             data["labels"] = [];
@@ -6454,12 +6697,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_78_1) { e_78 = { error: e_78_1 }; }
+            catch (e_81_1) { e_81 = { error: e_81_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                 }
-                finally { if (e_78) throw e_78.error; }
+                finally { if (e_81) throw e_81.error; }
             }
         }
         if (Array.isArray(this.all)) {
@@ -6470,12 +6713,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                     data["all"].push(item);
                 }
             }
-            catch (e_79_1) { e_79 = { error: e_79_1 }; }
+            catch (e_82_1) { e_82 = { error: e_82_1 }; }
             finally {
                 try {
                     if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                 }
-                finally { if (e_79) throw e_79.error; }
+                finally { if (e_82) throw e_82.error; }
             }
         }
         if (Array.isArray(this.data)) {
@@ -6486,12 +6729,12 @@ var DetailedDefectTrendDto = /** @class */ (function () {
                     data["data"].push(item.toJSON());
                 }
             }
-            catch (e_80_1) { e_80 = { error: e_80_1 }; }
+            catch (e_83_1) { e_83 = { error: e_83_1 }; }
             finally {
                 try {
                     if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-                finally { if (e_80) throw e_80.error; }
+                finally { if (e_83) throw e_83.error; }
             }
         }
         return data;
@@ -6515,7 +6758,7 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
         }
     }
     DetailedGeneralInsightsDto.prototype.init = function (_data) {
-        var e_81, _a, e_82, _b, e_83, _c, e_84, _d;
+        var e_84, _a, e_85, _b, e_86, _c, e_87, _d;
         if (_data) {
             this.totalDetections = _data["totalDetections"];
             this.totalDefects = _data["totalDefects"];
@@ -6528,12 +6771,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_81_1) { e_81 = { error: e_81_1 }; }
+                catch (e_84_1) { e_84 = { error: e_84_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                     }
-                    finally { if (e_81) throw e_81.error; }
+                    finally { if (e_84) throw e_84.error; }
                 }
             }
             if (Array.isArray(_data["detections"])) {
@@ -6544,12 +6787,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                         this.detections.push(item);
                     }
                 }
-                catch (e_82_1) { e_82 = { error: e_82_1 }; }
+                catch (e_85_1) { e_85 = { error: e_85_1 }; }
                 finally {
                     try {
                         if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                     }
-                    finally { if (e_82) throw e_82.error; }
+                    finally { if (e_85) throw e_85.error; }
                 }
             }
             if (Array.isArray(_data["defects"])) {
@@ -6560,12 +6803,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                         this.defects.push(item);
                     }
                 }
-                catch (e_83_1) { e_83 = { error: e_83_1 }; }
+                catch (e_86_1) { e_86 = { error: e_86_1 }; }
                 finally {
                     try {
                         if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                     }
-                    finally { if (e_83) throw e_83.error; }
+                    finally { if (e_86) throw e_86.error; }
                 }
             }
             if (Array.isArray(_data["good"])) {
@@ -6576,12 +6819,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                         this.good.push(item);
                     }
                 }
-                catch (e_84_1) { e_84 = { error: e_84_1 }; }
+                catch (e_87_1) { e_87 = { error: e_87_1 }; }
                 finally {
                     try {
                         if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                     }
-                    finally { if (e_84) throw e_84.error; }
+                    finally { if (e_87) throw e_87.error; }
                 }
             }
         }
@@ -6593,7 +6836,7 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
         return result;
     };
     DetailedGeneralInsightsDto.prototype.toJSON = function (data) {
-        var e_85, _a, e_86, _b, e_87, _c, e_88, _d;
+        var e_88, _a, e_89, _b, e_90, _c, e_91, _d;
         data = typeof data === 'object' ? data : {};
         data["totalDetections"] = this.totalDetections;
         data["totalDefects"] = this.totalDefects;
@@ -6606,12 +6849,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_85_1) { e_85 = { error: e_85_1 }; }
+            catch (e_88_1) { e_88 = { error: e_88_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                 }
-                finally { if (e_85) throw e_85.error; }
+                finally { if (e_88) throw e_88.error; }
             }
         }
         if (Array.isArray(this.detections)) {
@@ -6622,12 +6865,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                     data["detections"].push(item);
                 }
             }
-            catch (e_86_1) { e_86 = { error: e_86_1 }; }
+            catch (e_89_1) { e_89 = { error: e_89_1 }; }
             finally {
                 try {
                     if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                 }
-                finally { if (e_86) throw e_86.error; }
+                finally { if (e_89) throw e_89.error; }
             }
         }
         if (Array.isArray(this.defects)) {
@@ -6638,12 +6881,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                     data["defects"].push(item);
                 }
             }
-            catch (e_87_1) { e_87 = { error: e_87_1 }; }
+            catch (e_90_1) { e_90 = { error: e_90_1 }; }
             finally {
                 try {
                     if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                 }
-                finally { if (e_87) throw e_87.error; }
+                finally { if (e_90) throw e_90.error; }
             }
         }
         if (Array.isArray(this.good)) {
@@ -6654,12 +6897,12 @@ var DetailedGeneralInsightsDto = /** @class */ (function () {
                     data["good"].push(item);
                 }
             }
-            catch (e_88_1) { e_88 = { error: e_88_1 }; }
+            catch (e_91_1) { e_91 = { error: e_91_1 }; }
             finally {
                 try {
                     if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                 }
-                finally { if (e_88) throw e_88.error; }
+                finally { if (e_91) throw e_91.error; }
             }
         }
         return data;
@@ -6683,7 +6926,7 @@ var DetailedRevenueLossDataDto = /** @class */ (function () {
         }
     }
     DetailedRevenueLossDataDto.prototype.init = function (_data) {
-        var e_89, _a;
+        var e_92, _a;
         if (_data) {
             this.name = _data["name"];
             this.id = _data["id"];
@@ -6695,12 +6938,12 @@ var DetailedRevenueLossDataDto = /** @class */ (function () {
                         this.data.push(item);
                     }
                 }
-                catch (e_89_1) { e_89 = { error: e_89_1 }; }
+                catch (e_92_1) { e_92 = { error: e_92_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_89) throw e_89.error; }
+                    finally { if (e_92) throw e_92.error; }
                 }
             }
         }
@@ -6712,7 +6955,7 @@ var DetailedRevenueLossDataDto = /** @class */ (function () {
         return result;
     };
     DetailedRevenueLossDataDto.prototype.toJSON = function (data) {
-        var e_90, _a;
+        var e_93, _a;
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["id"] = this.id;
@@ -6724,12 +6967,12 @@ var DetailedRevenueLossDataDto = /** @class */ (function () {
                     data["data"].push(item);
                 }
             }
-            catch (e_90_1) { e_90 = { error: e_90_1 }; }
+            catch (e_93_1) { e_93 = { error: e_93_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_90) throw e_90.error; }
+                finally { if (e_93) throw e_93.error; }
             }
         }
         return data;
@@ -6753,7 +6996,7 @@ var DetailedRevenueLossDto = /** @class */ (function () {
         }
     }
     DetailedRevenueLossDto.prototype.init = function (_data) {
-        var e_91, _a, e_92, _b, e_93, _c;
+        var e_94, _a, e_95, _b, e_96, _c;
         if (_data) {
             if (Array.isArray(_data["labels"])) {
                 this.labels = [];
@@ -6763,12 +7006,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_91_1) { e_91 = { error: e_91_1 }; }
+                catch (e_94_1) { e_94 = { error: e_94_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                     }
-                    finally { if (e_91) throw e_91.error; }
+                    finally { if (e_94) throw e_94.error; }
                 }
             }
             if (Array.isArray(_data["all"])) {
@@ -6779,12 +7022,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                         this.all.push(item);
                     }
                 }
-                catch (e_92_1) { e_92 = { error: e_92_1 }; }
+                catch (e_95_1) { e_95 = { error: e_95_1 }; }
                 finally {
                     try {
                         if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                     }
-                    finally { if (e_92) throw e_92.error; }
+                    finally { if (e_95) throw e_95.error; }
                 }
             }
             if (Array.isArray(_data["data"])) {
@@ -6795,12 +7038,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                         this.data.push(DetailedRevenueLossDataDto.fromJS(item));
                     }
                 }
-                catch (e_93_1) { e_93 = { error: e_93_1 }; }
+                catch (e_96_1) { e_96 = { error: e_96_1 }; }
                 finally {
                     try {
                         if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                     }
-                    finally { if (e_93) throw e_93.error; }
+                    finally { if (e_96) throw e_96.error; }
                 }
             }
         }
@@ -6812,7 +7055,7 @@ var DetailedRevenueLossDto = /** @class */ (function () {
         return result;
     };
     DetailedRevenueLossDto.prototype.toJSON = function (data) {
-        var e_94, _a, e_95, _b, e_96, _c;
+        var e_97, _a, e_98, _b, e_99, _c;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.labels)) {
             data["labels"] = [];
@@ -6822,12 +7065,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_94_1) { e_94 = { error: e_94_1 }; }
+            catch (e_97_1) { e_97 = { error: e_97_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                 }
-                finally { if (e_94) throw e_94.error; }
+                finally { if (e_97) throw e_97.error; }
             }
         }
         if (Array.isArray(this.all)) {
@@ -6838,12 +7081,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                     data["all"].push(item);
                 }
             }
-            catch (e_95_1) { e_95 = { error: e_95_1 }; }
+            catch (e_98_1) { e_98 = { error: e_98_1 }; }
             finally {
                 try {
                     if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                 }
-                finally { if (e_95) throw e_95.error; }
+                finally { if (e_98) throw e_98.error; }
             }
         }
         if (Array.isArray(this.data)) {
@@ -6854,12 +7097,12 @@ var DetailedRevenueLossDto = /** @class */ (function () {
                     data["data"].push(item.toJSON());
                 }
             }
-            catch (e_96_1) { e_96 = { error: e_96_1 }; }
+            catch (e_99_1) { e_99 = { error: e_99_1 }; }
             finally {
                 try {
                     if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-                finally { if (e_96) throw e_96.error; }
+                finally { if (e_99) throw e_99.error; }
             }
         }
         return data;
@@ -7073,7 +7316,7 @@ var GetRoleForEditOutput = /** @class */ (function () {
         }
     }
     GetRoleForEditOutput.prototype.init = function (_data) {
-        var e_97, _a, e_98, _b;
+        var e_100, _a, e_101, _b;
         if (_data) {
             this.role = _data["role"] ? RoleEditDto.fromJS(_data["role"]) : undefined;
             if (Array.isArray(_data["permissions"])) {
@@ -7084,12 +7327,12 @@ var GetRoleForEditOutput = /** @class */ (function () {
                         this.permissions.push(FlatPermissionDto.fromJS(item));
                     }
                 }
-                catch (e_97_1) { e_97 = { error: e_97_1 }; }
+                catch (e_100_1) { e_100 = { error: e_100_1 }; }
                 finally {
                     try {
                         if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                     }
-                    finally { if (e_97) throw e_97.error; }
+                    finally { if (e_100) throw e_100.error; }
                 }
             }
             if (Array.isArray(_data["grantedPermissionNames"])) {
@@ -7100,12 +7343,12 @@ var GetRoleForEditOutput = /** @class */ (function () {
                         this.grantedPermissionNames.push(item);
                     }
                 }
-                catch (e_98_1) { e_98 = { error: e_98_1 }; }
+                catch (e_101_1) { e_101 = { error: e_101_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                     }
-                    finally { if (e_98) throw e_98.error; }
+                    finally { if (e_101) throw e_101.error; }
                 }
             }
         }
@@ -7117,7 +7360,7 @@ var GetRoleForEditOutput = /** @class */ (function () {
         return result;
     };
     GetRoleForEditOutput.prototype.toJSON = function (data) {
-        var e_99, _a, e_100, _b;
+        var e_102, _a, e_103, _b;
         data = typeof data === 'object' ? data : {};
         data["role"] = this.role ? this.role.toJSON() : undefined;
         if (Array.isArray(this.permissions)) {
@@ -7128,12 +7371,12 @@ var GetRoleForEditOutput = /** @class */ (function () {
                     data["permissions"].push(item.toJSON());
                 }
             }
-            catch (e_99_1) { e_99 = { error: e_99_1 }; }
+            catch (e_102_1) { e_102 = { error: e_102_1 }; }
             finally {
                 try {
                     if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                 }
-                finally { if (e_99) throw e_99.error; }
+                finally { if (e_102) throw e_102.error; }
             }
         }
         if (Array.isArray(this.grantedPermissionNames)) {
@@ -7144,12 +7387,12 @@ var GetRoleForEditOutput = /** @class */ (function () {
                     data["grantedPermissionNames"].push(item);
                 }
             }
-            catch (e_100_1) { e_100 = { error: e_100_1 }; }
+            catch (e_103_1) { e_103 = { error: e_103_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                 }
-                finally { if (e_100) throw e_100.error; }
+                finally { if (e_103) throw e_103.error; }
             }
         }
         return data;
@@ -7277,7 +7520,7 @@ var OverviewDefectiveRatio = /** @class */ (function () {
         }
     }
     OverviewDefectiveRatio.prototype.init = function (_data) {
-        var e_101, _a, e_102, _b;
+        var e_104, _a, e_105, _b;
         if (_data) {
             if (Array.isArray(_data["names"])) {
                 this.names = [];
@@ -7287,12 +7530,12 @@ var OverviewDefectiveRatio = /** @class */ (function () {
                         this.names.push(item);
                     }
                 }
-                catch (e_101_1) { e_101 = { error: e_101_1 }; }
+                catch (e_104_1) { e_104 = { error: e_104_1 }; }
                 finally {
                     try {
                         if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                     }
-                    finally { if (e_101) throw e_101.error; }
+                    finally { if (e_104) throw e_104.error; }
                 }
             }
             if (Array.isArray(_data["count"])) {
@@ -7303,12 +7546,12 @@ var OverviewDefectiveRatio = /** @class */ (function () {
                         this.count.push(item);
                     }
                 }
-                catch (e_102_1) { e_102 = { error: e_102_1 }; }
+                catch (e_105_1) { e_105 = { error: e_105_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                     }
-                    finally { if (e_102) throw e_102.error; }
+                    finally { if (e_105) throw e_105.error; }
                 }
             }
         }
@@ -7320,7 +7563,7 @@ var OverviewDefectiveRatio = /** @class */ (function () {
         return result;
     };
     OverviewDefectiveRatio.prototype.toJSON = function (data) {
-        var e_103, _a, e_104, _b;
+        var e_106, _a, e_107, _b;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.names)) {
             data["names"] = [];
@@ -7330,12 +7573,12 @@ var OverviewDefectiveRatio = /** @class */ (function () {
                     data["names"].push(item);
                 }
             }
-            catch (e_103_1) { e_103 = { error: e_103_1 }; }
+            catch (e_106_1) { e_106 = { error: e_106_1 }; }
             finally {
                 try {
                     if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                 }
-                finally { if (e_103) throw e_103.error; }
+                finally { if (e_106) throw e_106.error; }
             }
         }
         if (Array.isArray(this.count)) {
@@ -7346,12 +7589,12 @@ var OverviewDefectiveRatio = /** @class */ (function () {
                     data["count"].push(item);
                 }
             }
-            catch (e_104_1) { e_104 = { error: e_104_1 }; }
+            catch (e_107_1) { e_107 = { error: e_107_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                 }
-                finally { if (e_104) throw e_104.error; }
+                finally { if (e_107) throw e_107.error; }
             }
         }
         return data;
@@ -7375,7 +7618,7 @@ var OverviewDefectRatioDto = /** @class */ (function () {
         }
     }
     OverviewDefectRatioDto.prototype.init = function (_data) {
-        var e_105, _a, e_106, _b, e_107, _c, e_108, _d;
+        var e_108, _a, e_109, _b, e_110, _c, e_111, _d;
         if (_data) {
             if (Array.isArray(_data["ids"])) {
                 this.ids = [];
@@ -7385,12 +7628,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                         this.ids.push(item);
                     }
                 }
-                catch (e_105_1) { e_105 = { error: e_105_1 }; }
+                catch (e_108_1) { e_108 = { error: e_108_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                     }
-                    finally { if (e_105) throw e_105.error; }
+                    finally { if (e_108) throw e_108.error; }
                 }
             }
             if (Array.isArray(_data["name"])) {
@@ -7401,12 +7644,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                         this.name.push(item);
                     }
                 }
-                catch (e_106_1) { e_106 = { error: e_106_1 }; }
+                catch (e_109_1) { e_109 = { error: e_109_1 }; }
                 finally {
                     try {
                         if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                     }
-                    finally { if (e_106) throw e_106.error; }
+                    finally { if (e_109) throw e_109.error; }
                 }
             }
             if (Array.isArray(_data["defects"])) {
@@ -7417,12 +7660,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                         this.defects.push(item);
                     }
                 }
-                catch (e_107_1) { e_107 = { error: e_107_1 }; }
+                catch (e_110_1) { e_110 = { error: e_110_1 }; }
                 finally {
                     try {
                         if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                     }
-                    finally { if (e_107) throw e_107.error; }
+                    finally { if (e_110) throw e_110.error; }
                 }
             }
             if (Array.isArray(_data["good"])) {
@@ -7433,12 +7676,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                         this.good.push(item);
                     }
                 }
-                catch (e_108_1) { e_108 = { error: e_108_1 }; }
+                catch (e_111_1) { e_111 = { error: e_111_1 }; }
                 finally {
                     try {
                         if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                     }
-                    finally { if (e_108) throw e_108.error; }
+                    finally { if (e_111) throw e_111.error; }
                 }
             }
         }
@@ -7450,7 +7693,7 @@ var OverviewDefectRatioDto = /** @class */ (function () {
         return result;
     };
     OverviewDefectRatioDto.prototype.toJSON = function (data) {
-        var e_109, _a, e_110, _b, e_111, _c, e_112, _d;
+        var e_112, _a, e_113, _b, e_114, _c, e_115, _d;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.ids)) {
             data["ids"] = [];
@@ -7460,12 +7703,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                     data["ids"].push(item);
                 }
             }
-            catch (e_109_1) { e_109 = { error: e_109_1 }; }
+            catch (e_112_1) { e_112 = { error: e_112_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                 }
-                finally { if (e_109) throw e_109.error; }
+                finally { if (e_112) throw e_112.error; }
             }
         }
         if (Array.isArray(this.name)) {
@@ -7476,12 +7719,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                     data["name"].push(item);
                 }
             }
-            catch (e_110_1) { e_110 = { error: e_110_1 }; }
+            catch (e_113_1) { e_113 = { error: e_113_1 }; }
             finally {
                 try {
                     if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                 }
-                finally { if (e_110) throw e_110.error; }
+                finally { if (e_113) throw e_113.error; }
             }
         }
         if (Array.isArray(this.defects)) {
@@ -7492,12 +7735,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                     data["defects"].push(item);
                 }
             }
-            catch (e_111_1) { e_111 = { error: e_111_1 }; }
+            catch (e_114_1) { e_114 = { error: e_114_1 }; }
             finally {
                 try {
                     if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                 }
-                finally { if (e_111) throw e_111.error; }
+                finally { if (e_114) throw e_114.error; }
             }
         }
         if (Array.isArray(this.good)) {
@@ -7508,12 +7751,12 @@ var OverviewDefectRatioDto = /** @class */ (function () {
                     data["good"].push(item);
                 }
             }
-            catch (e_112_1) { e_112 = { error: e_112_1 }; }
+            catch (e_115_1) { e_115 = { error: e_115_1 }; }
             finally {
                 try {
                     if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                 }
-                finally { if (e_112) throw e_112.error; }
+                finally { if (e_115) throw e_115.error; }
             }
         }
         return data;
@@ -7537,7 +7780,7 @@ var OverviewDefectTrendDataDto = /** @class */ (function () {
         }
     }
     OverviewDefectTrendDataDto.prototype.init = function (_data) {
-        var e_113, _a;
+        var e_116, _a;
         if (_data) {
             this.name = _data["name"];
             this.id = _data["id"];
@@ -7549,12 +7792,12 @@ var OverviewDefectTrendDataDto = /** @class */ (function () {
                         this.data.push(item);
                     }
                 }
-                catch (e_113_1) { e_113 = { error: e_113_1 }; }
+                catch (e_116_1) { e_116 = { error: e_116_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_113) throw e_113.error; }
+                    finally { if (e_116) throw e_116.error; }
                 }
             }
         }
@@ -7566,7 +7809,7 @@ var OverviewDefectTrendDataDto = /** @class */ (function () {
         return result;
     };
     OverviewDefectTrendDataDto.prototype.toJSON = function (data) {
-        var e_114, _a;
+        var e_117, _a;
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["id"] = this.id;
@@ -7578,12 +7821,12 @@ var OverviewDefectTrendDataDto = /** @class */ (function () {
                     data["data"].push(item);
                 }
             }
-            catch (e_114_1) { e_114 = { error: e_114_1 }; }
+            catch (e_117_1) { e_117 = { error: e_117_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_114) throw e_114.error; }
+                finally { if (e_117) throw e_117.error; }
             }
         }
         return data;
@@ -7607,7 +7850,7 @@ var OverviewDefectTrendDto = /** @class */ (function () {
         }
     }
     OverviewDefectTrendDto.prototype.init = function (_data) {
-        var e_115, _a, e_116, _b, e_117, _c;
+        var e_118, _a, e_119, _b, e_120, _c;
         if (_data) {
             if (Array.isArray(_data["labels"])) {
                 this.labels = [];
@@ -7617,12 +7860,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_115_1) { e_115 = { error: e_115_1 }; }
+                catch (e_118_1) { e_118 = { error: e_118_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                     }
-                    finally { if (e_115) throw e_115.error; }
+                    finally { if (e_118) throw e_118.error; }
                 }
             }
             if (Array.isArray(_data["all"])) {
@@ -7633,12 +7876,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                         this.all.push(item);
                     }
                 }
-                catch (e_116_1) { e_116 = { error: e_116_1 }; }
+                catch (e_119_1) { e_119 = { error: e_119_1 }; }
                 finally {
                     try {
                         if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                     }
-                    finally { if (e_116) throw e_116.error; }
+                    finally { if (e_119) throw e_119.error; }
                 }
             }
             if (Array.isArray(_data["data"])) {
@@ -7649,12 +7892,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                         this.data.push(OverviewDefectTrendDataDto.fromJS(item));
                     }
                 }
-                catch (e_117_1) { e_117 = { error: e_117_1 }; }
+                catch (e_120_1) { e_120 = { error: e_120_1 }; }
                 finally {
                     try {
                         if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                     }
-                    finally { if (e_117) throw e_117.error; }
+                    finally { if (e_120) throw e_120.error; }
                 }
             }
         }
@@ -7666,7 +7909,7 @@ var OverviewDefectTrendDto = /** @class */ (function () {
         return result;
     };
     OverviewDefectTrendDto.prototype.toJSON = function (data) {
-        var e_118, _a, e_119, _b, e_120, _c;
+        var e_121, _a, e_122, _b, e_123, _c;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.labels)) {
             data["labels"] = [];
@@ -7676,12 +7919,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_118_1) { e_118 = { error: e_118_1 }; }
+            catch (e_121_1) { e_121 = { error: e_121_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                 }
-                finally { if (e_118) throw e_118.error; }
+                finally { if (e_121) throw e_121.error; }
             }
         }
         if (Array.isArray(this.all)) {
@@ -7692,12 +7935,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                     data["all"].push(item);
                 }
             }
-            catch (e_119_1) { e_119 = { error: e_119_1 }; }
+            catch (e_122_1) { e_122 = { error: e_122_1 }; }
             finally {
                 try {
                     if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                 }
-                finally { if (e_119) throw e_119.error; }
+                finally { if (e_122) throw e_122.error; }
             }
         }
         if (Array.isArray(this.data)) {
@@ -7708,12 +7951,12 @@ var OverviewDefectTrendDto = /** @class */ (function () {
                     data["data"].push(item.toJSON());
                 }
             }
-            catch (e_120_1) { e_120 = { error: e_120_1 }; }
+            catch (e_123_1) { e_123 = { error: e_123_1 }; }
             finally {
                 try {
                     if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-                finally { if (e_120) throw e_120.error; }
+                finally { if (e_123) throw e_123.error; }
             }
         }
         return data;
@@ -7737,7 +7980,7 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
         }
     }
     OverviewGeneralInsightsDto.prototype.init = function (_data) {
-        var e_121, _a, e_122, _b, e_123, _c, e_124, _d;
+        var e_124, _a, e_125, _b, e_126, _c, e_127, _d;
         if (_data) {
             this.totalDetections = _data["totalDetections"];
             this.totalDefects = _data["totalDefects"];
@@ -7750,12 +7993,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_121_1) { e_121 = { error: e_121_1 }; }
+                catch (e_124_1) { e_124 = { error: e_124_1 }; }
                 finally {
                     try {
                         if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                     }
-                    finally { if (e_121) throw e_121.error; }
+                    finally { if (e_124) throw e_124.error; }
                 }
             }
             if (Array.isArray(_data["detections"])) {
@@ -7766,12 +8009,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                         this.detections.push(item);
                     }
                 }
-                catch (e_122_1) { e_122 = { error: e_122_1 }; }
+                catch (e_125_1) { e_125 = { error: e_125_1 }; }
                 finally {
                     try {
                         if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                     }
-                    finally { if (e_122) throw e_122.error; }
+                    finally { if (e_125) throw e_125.error; }
                 }
             }
             if (Array.isArray(_data["defects"])) {
@@ -7782,12 +8025,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                         this.defects.push(item);
                     }
                 }
-                catch (e_123_1) { e_123 = { error: e_123_1 }; }
+                catch (e_126_1) { e_126 = { error: e_126_1 }; }
                 finally {
                     try {
                         if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                     }
-                    finally { if (e_123) throw e_123.error; }
+                    finally { if (e_126) throw e_126.error; }
                 }
             }
             if (Array.isArray(_data["good"])) {
@@ -7798,12 +8041,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                         this.good.push(item);
                     }
                 }
-                catch (e_124_1) { e_124 = { error: e_124_1 }; }
+                catch (e_127_1) { e_127 = { error: e_127_1 }; }
                 finally {
                     try {
                         if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                     }
-                    finally { if (e_124) throw e_124.error; }
+                    finally { if (e_127) throw e_127.error; }
                 }
             }
         }
@@ -7815,7 +8058,7 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
         return result;
     };
     OverviewGeneralInsightsDto.prototype.toJSON = function (data) {
-        var e_125, _a, e_126, _b, e_127, _c, e_128, _d;
+        var e_128, _a, e_129, _b, e_130, _c, e_131, _d;
         data = typeof data === 'object' ? data : {};
         data["totalDetections"] = this.totalDetections;
         data["totalDefects"] = this.totalDefects;
@@ -7828,12 +8071,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_125_1) { e_125 = { error: e_125_1 }; }
+            catch (e_128_1) { e_128 = { error: e_128_1 }; }
             finally {
                 try {
                     if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
                 }
-                finally { if (e_125) throw e_125.error; }
+                finally { if (e_128) throw e_128.error; }
             }
         }
         if (Array.isArray(this.detections)) {
@@ -7844,12 +8087,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                     data["detections"].push(item);
                 }
             }
-            catch (e_126_1) { e_126 = { error: e_126_1 }; }
+            catch (e_129_1) { e_129 = { error: e_129_1 }; }
             finally {
                 try {
                     if (_h && !_h.done && (_b = _g.return)) _b.call(_g);
                 }
-                finally { if (e_126) throw e_126.error; }
+                finally { if (e_129) throw e_129.error; }
             }
         }
         if (Array.isArray(this.defects)) {
@@ -7860,12 +8103,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                     data["defects"].push(item);
                 }
             }
-            catch (e_127_1) { e_127 = { error: e_127_1 }; }
+            catch (e_130_1) { e_130 = { error: e_130_1 }; }
             finally {
                 try {
                     if (_k && !_k.done && (_c = _j.return)) _c.call(_j);
                 }
-                finally { if (e_127) throw e_127.error; }
+                finally { if (e_130) throw e_130.error; }
             }
         }
         if (Array.isArray(this.good)) {
@@ -7876,12 +8119,12 @@ var OverviewGeneralInsightsDto = /** @class */ (function () {
                     data["good"].push(item);
                 }
             }
-            catch (e_128_1) { e_128 = { error: e_128_1 }; }
+            catch (e_131_1) { e_131 = { error: e_131_1 }; }
             finally {
                 try {
                     if (_m && !_m.done && (_d = _l.return)) _d.call(_l);
                 }
-                finally { if (e_128) throw e_128.error; }
+                finally { if (e_131) throw e_131.error; }
             }
         }
         return data;
@@ -7905,7 +8148,7 @@ var OverviewRevenueLossDataDto = /** @class */ (function () {
         }
     }
     OverviewRevenueLossDataDto.prototype.init = function (_data) {
-        var e_129, _a;
+        var e_132, _a;
         if (_data) {
             this.name = _data["name"];
             this.id = _data["id"];
@@ -7917,12 +8160,12 @@ var OverviewRevenueLossDataDto = /** @class */ (function () {
                         this.data.push(item);
                     }
                 }
-                catch (e_129_1) { e_129 = { error: e_129_1 }; }
+                catch (e_132_1) { e_132 = { error: e_132_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_129) throw e_129.error; }
+                    finally { if (e_132) throw e_132.error; }
                 }
             }
         }
@@ -7934,7 +8177,7 @@ var OverviewRevenueLossDataDto = /** @class */ (function () {
         return result;
     };
     OverviewRevenueLossDataDto.prototype.toJSON = function (data) {
-        var e_130, _a;
+        var e_133, _a;
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["id"] = this.id;
@@ -7946,12 +8189,12 @@ var OverviewRevenueLossDataDto = /** @class */ (function () {
                     data["data"].push(item);
                 }
             }
-            catch (e_130_1) { e_130 = { error: e_130_1 }; }
+            catch (e_133_1) { e_133 = { error: e_133_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_130) throw e_130.error; }
+                finally { if (e_133) throw e_133.error; }
             }
         }
         return data;
@@ -7975,7 +8218,7 @@ var OverviewRevenueLossDto = /** @class */ (function () {
         }
     }
     OverviewRevenueLossDto.prototype.init = function (_data) {
-        var e_131, _a, e_132, _b, e_133, _c;
+        var e_134, _a, e_135, _b, e_136, _c;
         if (_data) {
             if (Array.isArray(_data["labels"])) {
                 this.labels = [];
@@ -7985,12 +8228,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                         this.labels.push(moment__WEBPACK_IMPORTED_MODULE_0__(item));
                     }
                 }
-                catch (e_131_1) { e_131 = { error: e_131_1 }; }
+                catch (e_134_1) { e_134 = { error: e_134_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                     }
-                    finally { if (e_131) throw e_131.error; }
+                    finally { if (e_134) throw e_134.error; }
                 }
             }
             if (Array.isArray(_data["all"])) {
@@ -8001,12 +8244,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                         this.all.push(item);
                     }
                 }
-                catch (e_132_1) { e_132 = { error: e_132_1 }; }
+                catch (e_135_1) { e_135 = { error: e_135_1 }; }
                 finally {
                     try {
                         if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                     }
-                    finally { if (e_132) throw e_132.error; }
+                    finally { if (e_135) throw e_135.error; }
                 }
             }
             if (Array.isArray(_data["data"])) {
@@ -8017,12 +8260,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                         this.data.push(OverviewRevenueLossDataDto.fromJS(item));
                     }
                 }
-                catch (e_133_1) { e_133 = { error: e_133_1 }; }
+                catch (e_136_1) { e_136 = { error: e_136_1 }; }
                 finally {
                     try {
                         if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                     }
-                    finally { if (e_133) throw e_133.error; }
+                    finally { if (e_136) throw e_136.error; }
                 }
             }
         }
@@ -8034,7 +8277,7 @@ var OverviewRevenueLossDto = /** @class */ (function () {
         return result;
     };
     OverviewRevenueLossDto.prototype.toJSON = function (data) {
-        var e_134, _a, e_135, _b, e_136, _c;
+        var e_137, _a, e_138, _b, e_139, _c;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.labels)) {
             data["labels"] = [];
@@ -8044,12 +8287,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                     data["labels"].push(item.toISOString());
                 }
             }
-            catch (e_134_1) { e_134 = { error: e_134_1 }; }
+            catch (e_137_1) { e_137 = { error: e_137_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
                 }
-                finally { if (e_134) throw e_134.error; }
+                finally { if (e_137) throw e_137.error; }
             }
         }
         if (Array.isArray(this.all)) {
@@ -8060,12 +8303,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                     data["all"].push(item);
                 }
             }
-            catch (e_135_1) { e_135 = { error: e_135_1 }; }
+            catch (e_138_1) { e_138 = { error: e_138_1 }; }
             finally {
                 try {
                     if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
                 }
-                finally { if (e_135) throw e_135.error; }
+                finally { if (e_138) throw e_138.error; }
             }
         }
         if (Array.isArray(this.data)) {
@@ -8076,12 +8319,12 @@ var OverviewRevenueLossDto = /** @class */ (function () {
                     data["data"].push(item.toJSON());
                 }
             }
-            catch (e_136_1) { e_136 = { error: e_136_1 }; }
+            catch (e_139_1) { e_139 = { error: e_139_1 }; }
             finally {
                 try {
                     if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-                finally { if (e_136) throw e_136.error; }
+                finally { if (e_139) throw e_139.error; }
             }
         }
         return data;
@@ -8145,7 +8388,7 @@ var PermissionDtoListResultDto = /** @class */ (function () {
         }
     }
     PermissionDtoListResultDto.prototype.init = function (_data) {
-        var e_137, _a;
+        var e_140, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8155,12 +8398,12 @@ var PermissionDtoListResultDto = /** @class */ (function () {
                         this.items.push(PermissionDto.fromJS(item));
                     }
                 }
-                catch (e_137_1) { e_137 = { error: e_137_1 }; }
+                catch (e_140_1) { e_140 = { error: e_140_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_137) throw e_137.error; }
+                    finally { if (e_140) throw e_140.error; }
                 }
             }
         }
@@ -8172,7 +8415,7 @@ var PermissionDtoListResultDto = /** @class */ (function () {
         return result;
     };
     PermissionDtoListResultDto.prototype.toJSON = function (data) {
-        var e_138, _a;
+        var e_141, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8182,12 +8425,12 @@ var PermissionDtoListResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_138_1) { e_138 = { error: e_138_1 }; }
+            catch (e_141_1) { e_141 = { error: e_141_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_138) throw e_138.error; }
+                finally { if (e_141) throw e_141.error; }
             }
         }
         return data;
@@ -8247,7 +8490,7 @@ var ProductDtoListResultDto = /** @class */ (function () {
         }
     }
     ProductDtoListResultDto.prototype.init = function (_data) {
-        var e_139, _a;
+        var e_142, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8257,12 +8500,12 @@ var ProductDtoListResultDto = /** @class */ (function () {
                         this.items.push(ProductDto.fromJS(item));
                     }
                 }
-                catch (e_139_1) { e_139 = { error: e_139_1 }; }
+                catch (e_142_1) { e_142 = { error: e_142_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_139) throw e_139.error; }
+                    finally { if (e_142) throw e_142.error; }
                 }
             }
         }
@@ -8274,7 +8517,7 @@ var ProductDtoListResultDto = /** @class */ (function () {
         return result;
     };
     ProductDtoListResultDto.prototype.toJSON = function (data) {
-        var e_140, _a;
+        var e_143, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8284,12 +8527,12 @@ var ProductDtoListResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_140_1) { e_140 = { error: e_140_1 }; }
+            catch (e_143_1) { e_143 = { error: e_143_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_140) throw e_140.error; }
+                finally { if (e_143) throw e_143.error; }
             }
         }
         return data;
@@ -8429,7 +8672,7 @@ var RoleDto = /** @class */ (function () {
         }
     }
     RoleDto.prototype.init = function (_data) {
-        var e_141, _a;
+        var e_144, _a;
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
@@ -8444,12 +8687,12 @@ var RoleDto = /** @class */ (function () {
                         this.grantedPermissions.push(item);
                     }
                 }
-                catch (e_141_1) { e_141 = { error: e_141_1 }; }
+                catch (e_144_1) { e_144 = { error: e_144_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_141) throw e_141.error; }
+                    finally { if (e_144) throw e_144.error; }
                 }
             }
         }
@@ -8461,7 +8704,7 @@ var RoleDto = /** @class */ (function () {
         return result;
     };
     RoleDto.prototype.toJSON = function (data) {
-        var e_142, _a;
+        var e_145, _a;
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
@@ -8476,12 +8719,12 @@ var RoleDto = /** @class */ (function () {
                     data["grantedPermissions"].push(item);
                 }
             }
-            catch (e_142_1) { e_142 = { error: e_142_1 }; }
+            catch (e_145_1) { e_145 = { error: e_145_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_142) throw e_142.error; }
+                finally { if (e_145) throw e_145.error; }
             }
         }
         return data;
@@ -8505,7 +8748,7 @@ var RoleDtoListResultDto = /** @class */ (function () {
         }
     }
     RoleDtoListResultDto.prototype.init = function (_data) {
-        var e_143, _a;
+        var e_146, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8515,12 +8758,12 @@ var RoleDtoListResultDto = /** @class */ (function () {
                         this.items.push(RoleDto.fromJS(item));
                     }
                 }
-                catch (e_143_1) { e_143 = { error: e_143_1 }; }
+                catch (e_146_1) { e_146 = { error: e_146_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_143) throw e_143.error; }
+                    finally { if (e_146) throw e_146.error; }
                 }
             }
         }
@@ -8532,7 +8775,7 @@ var RoleDtoListResultDto = /** @class */ (function () {
         return result;
     };
     RoleDtoListResultDto.prototype.toJSON = function (data) {
-        var e_144, _a;
+        var e_147, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8542,12 +8785,12 @@ var RoleDtoListResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_144_1) { e_144 = { error: e_144_1 }; }
+            catch (e_147_1) { e_147 = { error: e_147_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_144) throw e_144.error; }
+                finally { if (e_147) throw e_147.error; }
             }
         }
         return data;
@@ -8571,7 +8814,7 @@ var RoleDtoPagedResultDto = /** @class */ (function () {
         }
     }
     RoleDtoPagedResultDto.prototype.init = function (_data) {
-        var e_145, _a;
+        var e_148, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8581,12 +8824,12 @@ var RoleDtoPagedResultDto = /** @class */ (function () {
                         this.items.push(RoleDto.fromJS(item));
                     }
                 }
-                catch (e_145_1) { e_145 = { error: e_145_1 }; }
+                catch (e_148_1) { e_148 = { error: e_148_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_145) throw e_145.error; }
+                    finally { if (e_148) throw e_148.error; }
                 }
             }
             this.totalCount = _data["totalCount"];
@@ -8599,7 +8842,7 @@ var RoleDtoPagedResultDto = /** @class */ (function () {
         return result;
     };
     RoleDtoPagedResultDto.prototype.toJSON = function (data) {
-        var e_146, _a;
+        var e_149, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8609,12 +8852,12 @@ var RoleDtoPagedResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_146_1) { e_146 = { error: e_146_1 }; }
+            catch (e_149_1) { e_149 = { error: e_149_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_146) throw e_146.error; }
+                finally { if (e_149) throw e_149.error; }
             }
         }
         data["totalCount"] = this.totalCount;
@@ -8725,7 +8968,7 @@ var RoleListDtoListResultDto = /** @class */ (function () {
         }
     }
     RoleListDtoListResultDto.prototype.init = function (_data) {
-        var e_147, _a;
+        var e_150, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8735,12 +8978,12 @@ var RoleListDtoListResultDto = /** @class */ (function () {
                         this.items.push(RoleListDto.fromJS(item));
                     }
                 }
-                catch (e_147_1) { e_147 = { error: e_147_1 }; }
+                catch (e_150_1) { e_150 = { error: e_150_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_147) throw e_147.error; }
+                    finally { if (e_150) throw e_150.error; }
                 }
             }
         }
@@ -8752,7 +8995,7 @@ var RoleListDtoListResultDto = /** @class */ (function () {
         return result;
     };
     RoleListDtoListResultDto.prototype.toJSON = function (data) {
-        var e_148, _a;
+        var e_151, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8762,12 +9005,12 @@ var RoleListDtoListResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_148_1) { e_148 = { error: e_148_1 }; }
+            catch (e_151_1) { e_151 = { error: e_151_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_148) throw e_148.error; }
+                finally { if (e_151) throw e_151.error; }
             }
         }
         return data;
@@ -8827,7 +9070,7 @@ var StageDtoListResultDto = /** @class */ (function () {
         }
     }
     StageDtoListResultDto.prototype.init = function (_data) {
-        var e_149, _a;
+        var e_152, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8837,12 +9080,12 @@ var StageDtoListResultDto = /** @class */ (function () {
                         this.items.push(StageDto.fromJS(item));
                     }
                 }
-                catch (e_149_1) { e_149 = { error: e_149_1 }; }
+                catch (e_152_1) { e_152 = { error: e_152_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_149) throw e_149.error; }
+                    finally { if (e_152) throw e_152.error; }
                 }
             }
         }
@@ -8854,7 +9097,7 @@ var StageDtoListResultDto = /** @class */ (function () {
         return result;
     };
     StageDtoListResultDto.prototype.toJSON = function (data) {
-        var e_150, _a;
+        var e_153, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8864,12 +9107,12 @@ var StageDtoListResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_150_1) { e_150 = { error: e_150_1 }; }
+            catch (e_153_1) { e_153 = { error: e_153_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_150) throw e_150.error; }
+                finally { if (e_153) throw e_153.error; }
             }
         }
         return data;
@@ -8939,7 +9182,7 @@ var TenantDtoPagedResultDto = /** @class */ (function () {
         }
     }
     TenantDtoPagedResultDto.prototype.init = function (_data) {
-        var e_151, _a;
+        var e_154, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -8949,12 +9192,12 @@ var TenantDtoPagedResultDto = /** @class */ (function () {
                         this.items.push(TenantDto.fromJS(item));
                     }
                 }
-                catch (e_151_1) { e_151 = { error: e_151_1 }; }
+                catch (e_154_1) { e_154 = { error: e_154_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_151) throw e_151.error; }
+                    finally { if (e_154) throw e_154.error; }
                 }
             }
             this.totalCount = _data["totalCount"];
@@ -8967,7 +9210,7 @@ var TenantDtoPagedResultDto = /** @class */ (function () {
         return result;
     };
     TenantDtoPagedResultDto.prototype.toJSON = function (data) {
-        var e_152, _a;
+        var e_155, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -8977,12 +9220,12 @@ var TenantDtoPagedResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_152_1) { e_152 = { error: e_152_1 }; }
+            catch (e_155_1) { e_155 = { error: e_155_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_152) throw e_152.error; }
+                finally { if (e_155) throw e_155.error; }
             }
         }
         data["totalCount"] = this.totalCount;
@@ -9045,7 +9288,7 @@ var UserDto = /** @class */ (function () {
         }
     }
     UserDto.prototype.init = function (_data) {
-        var e_153, _a;
+        var e_156, _a;
         if (_data) {
             this.id = _data["id"];
             this.userName = _data["userName"];
@@ -9064,12 +9307,12 @@ var UserDto = /** @class */ (function () {
                         this.roleNames.push(item);
                     }
                 }
-                catch (e_153_1) { e_153 = { error: e_153_1 }; }
+                catch (e_156_1) { e_156 = { error: e_156_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_153) throw e_153.error; }
+                    finally { if (e_156) throw e_156.error; }
                 }
             }
         }
@@ -9081,7 +9324,7 @@ var UserDto = /** @class */ (function () {
         return result;
     };
     UserDto.prototype.toJSON = function (data) {
-        var e_154, _a;
+        var e_157, _a;
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["userName"] = this.userName;
@@ -9100,12 +9343,12 @@ var UserDto = /** @class */ (function () {
                     data["roleNames"].push(item);
                 }
             }
-            catch (e_154_1) { e_154 = { error: e_154_1 }; }
+            catch (e_157_1) { e_157 = { error: e_157_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_154) throw e_154.error; }
+                finally { if (e_157) throw e_157.error; }
             }
         }
         return data;
@@ -9129,7 +9372,7 @@ var UserDtoPagedResultDto = /** @class */ (function () {
         }
     }
     UserDtoPagedResultDto.prototype.init = function (_data) {
-        var e_155, _a;
+        var e_158, _a;
         if (_data) {
             if (Array.isArray(_data["items"])) {
                 this.items = [];
@@ -9139,12 +9382,12 @@ var UserDtoPagedResultDto = /** @class */ (function () {
                         this.items.push(UserDto.fromJS(item));
                     }
                 }
-                catch (e_155_1) { e_155 = { error: e_155_1 }; }
+                catch (e_158_1) { e_158 = { error: e_158_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
-                    finally { if (e_155) throw e_155.error; }
+                    finally { if (e_158) throw e_158.error; }
                 }
             }
             this.totalCount = _data["totalCount"];
@@ -9157,7 +9400,7 @@ var UserDtoPagedResultDto = /** @class */ (function () {
         return result;
     };
     UserDtoPagedResultDto.prototype.toJSON = function (data) {
-        var e_156, _a;
+        var e_159, _a;
         data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.items)) {
             data["items"] = [];
@@ -9167,12 +9410,12 @@ var UserDtoPagedResultDto = /** @class */ (function () {
                     data["items"].push(item.toJSON());
                 }
             }
-            catch (e_156_1) { e_156 = { error: e_156_1 }; }
+            catch (e_159_1) { e_159 = { error: e_159_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_156) throw e_156.error; }
+                finally { if (e_159) throw e_159.error; }
             }
         }
         data["totalCount"] = this.totalCount;

@@ -53,6 +53,8 @@ import { ProductOverviewComponent } from './home/widgets/product-overview/produc
 import { ProductDefectTrendComponent } from './home/widgets/product-defect-trend/product-defect-trend.component';
 import { DefectsComponent } from './defects/defects.component';
 import { LightboxModule } from 'ngx-lightbox';
+import { TimerComponent } from './layout/timer/timer.component';
+import { UpdateRefreshIntervalComponent } from './users/update-refresh-interval/update-refresh-interval.component';
 
 
 @NgModule({
@@ -96,7 +98,9 @@ import { LightboxModule } from 'ngx-lightbox';
     DefectiveProductsComponent,
     ProductOverviewComponent,
     ProductDefectTrendComponent,
-    DefectsComponent
+    DefectsComponent,
+    TimerComponent,
+    UpdateRefreshIntervalComponent
   ],
   imports: [
     CommonModule,
@@ -127,6 +131,7 @@ import { LightboxModule } from 'ngx-lightbox';
     CreateUserDialogComponent,
     EditUserDialogComponent,
     ResetPasswordDialogComponent,
+    UpdateRefreshIntervalComponent
   ],
 })
 export class AppModule {}

@@ -1,0 +1,21 @@
+<div class="snooze-container" title="Toggle refresh">
+    <div class="circle">
+      <svg width="30" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(110,110)">
+          <circle r="100" class="e-c-base" [ngStyle]="{'stroke': css.stroke}" />
+          <g transform="rotate(-90)">
+            <circle r="100" class="e-c-progress"
+              [ngStyle]="{'strokeDasharray':css.strokeDasharray,'strokeDashoffset':css.strokeDashoffset}" />
+            <g id="e-pointer" [ngStyle]="{'transform':css.transform}">
+              <circle cx="100" cy="0" r="8" class="e-c-pointer" />
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="controls">
+      <div class="display-remain-time"></div>
+      <button type="button" [ngClass]="{'play':!isRunning,'pause':isRunning}" (click)="pauseTimer()"
+        id="pause"></button>
+    </div>
+  </div>

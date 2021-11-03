@@ -55,6 +55,28 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
             return moment(value).format('DD-MM-YY')
           }
         }, 
+      },
+      title: {
+        text: 'Duration',
+        style: {
+          color: '#4f4f4f',
+          fontSize: '13px',
+          fontFamily: 'Helvetica, Arial, sans-serif',
+          fontWeight: 600,
+          cssClass: 'apexcharts-xaxis-title',
+        }
+      }
+    },
+    yaxis: {
+      title: {
+        text: 'Loss x100',
+        style: {
+          color: '#4f4f4f',
+          fontSize: '13px',
+          fontFamily: 'Helvetica, Arial, sans-serif',
+          fontWeight: 600,
+          cssClass: 'apexcharts-xaxis-title',
+        }
       }
     },
     legend: {

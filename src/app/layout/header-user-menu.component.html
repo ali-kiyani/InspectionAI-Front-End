@@ -7,8 +7,11 @@
     />
   </a>
   <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-    <a class="dropdown-item" [routerLink]="['update-password']">
-      <i class="fas fa-user-edit"></i> {{ "UpdatePassword" | localize }}
+    <a class="dropdown-item" [routerLink]="['settings']">
+      <i class="fas fa-user-edit"></i> {{ "Settings" | localize }}
+    </a>
+    <a class="dropdown-item" href="javascript:;" (click)="refreshInterval()">
+      <i class="fas fa-stopwatch"></i> {{ "UpdateInterval" | localize }}
     </a>
     <a class="dropdown-item" href="javascript:;" (click)="logout()">
       <i class="fas fa-sign-out-alt"></i> {{ "Logout" | localize }}

@@ -155,7 +155,7 @@ export class AssemblyDetectionServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    addNewDetection(body: CreateAssemblyDetectionDto | undefined): Observable<void> {
+    addNewDetection(body: AssemblyDetectionDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/AddNewDetection";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -185,6 +185,58 @@ export class AssemblyDetectionServiceProxy {
     }
 
     protected processAddNewDetection(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addBulkDetections(body: AssemblyDetectionDto[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/AddBulkDetections";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddBulkDetections(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddBulkDetections(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddBulkDetections(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -900,6 +952,68 @@ export class OverviewDashboardServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param randLimit (optional) 
+     * @param from (optional) 
+     * @param to (optional) 
+     * @return Success
+     */
+    fillGoodData(randLimit: number | undefined, from: moment.Moment | undefined, to: moment.Moment | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/OverviewDashboard/FillGoodData?";
+        if (randLimit === null)
+            throw new Error("The parameter 'randLimit' cannot be null.");
+        else if (randLimit !== undefined)
+            url_ += "randLimit=" + encodeURIComponent("" + randLimit) + "&";
+        if (from === null)
+            throw new Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toJSON() : "") + "&";
+        if (to === null)
+            throw new Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toJSON() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillGoodData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillGoodData(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processFillGoodData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 
     /**
@@ -2933,6 +3047,58 @@ export class UserServiceProxy {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    changeRefreshTimeSettings(body: ChangeRefreshTimeDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/User/ChangeRefreshTimeSettings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangeRefreshTimeSettings(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangeRefreshTimeSettings(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processChangeRefreshTimeSettings(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -3129,7 +3295,7 @@ export class AssemblyDefectsDto implements IAssemblyDefectsDto {
     stageId: number;
     defectId: number;
     confidence: number;
-    imageUrl: string | undefined;
+    detectionTime: moment.Moment;
 
     constructor(data?: IAssemblyDefectsDto) {
         if (data) {
@@ -3147,7 +3313,7 @@ export class AssemblyDefectsDto implements IAssemblyDefectsDto {
             this.stageId = _data["stageId"];
             this.defectId = _data["defectId"];
             this.confidence = _data["confidence"];
-            this.imageUrl = _data["imageUrl"];
+            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
         }
     }
 
@@ -3165,7 +3331,7 @@ export class AssemblyDefectsDto implements IAssemblyDefectsDto {
         data["stageId"] = this.stageId;
         data["defectId"] = this.defectId;
         data["confidence"] = this.confidence;
-        data["imageUrl"] = this.imageUrl;
+        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
         return data; 
     }
 
@@ -3183,7 +3349,7 @@ export interface IAssemblyDefectsDto {
     stageId: number;
     defectId: number;
     confidence: number;
-    imageUrl: string | undefined;
+    detectionTime: moment.Moment;
 }
 
 export class AssemblyDetectionDto implements IAssemblyDetectionDto {
@@ -3193,6 +3359,7 @@ export class AssemblyDetectionDto implements IAssemblyDetectionDto {
     stageId: number;
     detectionTime: moment.Moment;
     defectsCount: number;
+    imageUrl: string | undefined;
     assemblyDefects: AssemblyDefectsDto[] | undefined;
 
     constructor(data?: IAssemblyDetectionDto) {
@@ -3212,6 +3379,7 @@ export class AssemblyDetectionDto implements IAssemblyDetectionDto {
             this.stageId = _data["stageId"];
             this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
             this.defectsCount = _data["defectsCount"];
+            this.imageUrl = _data["imageUrl"];
             if (Array.isArray(_data["assemblyDefects"])) {
                 this.assemblyDefects = [] as any;
                 for (let item of _data["assemblyDefects"])
@@ -3235,6 +3403,7 @@ export class AssemblyDetectionDto implements IAssemblyDetectionDto {
         data["stageId"] = this.stageId;
         data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
         data["defectsCount"] = this.defectsCount;
+        data["imageUrl"] = this.imageUrl;
         if (Array.isArray(this.assemblyDefects)) {
             data["assemblyDefects"] = [];
             for (let item of this.assemblyDefects)
@@ -3258,6 +3427,7 @@ export interface IAssemblyDetectionDto {
     stageId: number;
     detectionTime: moment.Moment;
     defectsCount: number;
+    imageUrl: string | undefined;
     assemblyDefects: AssemblyDefectsDto[] | undefined;
 }
 
@@ -3467,6 +3637,49 @@ export class ChangePasswordDto implements IChangePasswordDto {
 export interface IChangePasswordDto {
     currentPassword: string;
     newPassword: string;
+}
+
+export class ChangeRefreshTimeDto implements IChangeRefreshTimeDto {
+    refreshTime: number;
+
+    constructor(data?: IChangeRefreshTimeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.refreshTime = _data["refreshTime"];
+        }
+    }
+
+    static fromJS(data: any): ChangeRefreshTimeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeRefreshTimeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["refreshTime"] = this.refreshTime;
+        return data; 
+    }
+
+    clone(): ChangeRefreshTimeDto {
+        const json = this.toJSON();
+        let result = new ChangeRefreshTimeDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IChangeRefreshTimeDto {
+    refreshTime: number;
 }
 
 export class ChangeUiThemeInput implements IChangeUiThemeInput {

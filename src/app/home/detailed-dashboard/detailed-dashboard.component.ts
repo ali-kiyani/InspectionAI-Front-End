@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
 import { ProductDto, ProductServiceProxy, StageDto, StageServiceProxy } from '@shared/service-proxies/service-proxies';
@@ -8,7 +8,7 @@ import { ProductDto, ProductServiceProxy, StageDto, StageServiceProxy } from '@s
   templateUrl: './detailed-dashboard.component.html',
   styleUrls: ['./detailed-dashboard.component.css']
 })
-export class DetailedDashboardComponent extends AppComponentBase implements OnInit {
+export class DetailedDashboardComponent extends AppComponentBase implements OnInit, OnDestroy {
 
   selectedStage = 0
   selectedProduct = 0
@@ -38,6 +38,9 @@ export class DetailedDashboardComponent extends AppComponentBase implements OnIn
       this.selectedDuration = 'Weekly'
       this.apply()
     })
+    this._dataSharingSerivce.refreshDataOnPage.subscribe(r => {
+      this.apply()
+    })
   }
 
   getStages(pId, apply) {
@@ -61,5 +64,9 @@ export class DetailedDashboardComponent extends AppComponentBase implements OnIn
 
   productChanged(id) {
     this.getStages(id, false)
+  }
+
+  ngOnDestroy(): void {
+    this._dataSharingSerivce.refreshDataOnPage.unsubscribe()
   }
 }

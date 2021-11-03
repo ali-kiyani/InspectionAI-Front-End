@@ -1,0 +1,22 @@
+<form
+  class="form-horizontal"
+  autocomplete="off"
+  #refreshIntervalForm="ngForm"
+  (ngSubmit)="save()"
+>
+<abp-modal-header [title]="'ChangeRefreshInterval' | localize" (onCloseClick)="bsModalRef.hide()"></abp-modal-header>
+<div class="modal-body">
+    <div class="form-group row">
+        <label class="col-md-5 col-form-label" for="refreshInterval">
+            {{ "RefreshInterval" | localize }}
+        </label>
+        <div class="col-md-7">
+            <ng-select name="refreshInterval" style="min-width: 200px; margin-right: 10px;" [(ngModel)]="selectedInterval">
+                <ng-option *ngFor="let interval of intervals" [value]="interval.id">{{interval.name}}</ng-option>
+             </ng-select>
+        </div>
+    </div>
+</div>
+<abp-modal-footer [cancelDisabled]="saving" [saveDisabled]="!refreshIntervalForm.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"></abp-modal-footer>
+</form>

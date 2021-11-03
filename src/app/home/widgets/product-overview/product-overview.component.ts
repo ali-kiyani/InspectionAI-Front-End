@@ -16,7 +16,6 @@ export class ProductOverviewComponent implements OnInit {
   spark1 = {
     chart: {
       id: 'spark1',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {
@@ -69,7 +68,6 @@ export class ProductOverviewComponent implements OnInit {
   spark2 = {
     chart: {
       id: 'spark2',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {
@@ -122,7 +120,6 @@ export class ProductOverviewComponent implements OnInit {
   spark3 = {
     chart: {
       id: 'spark3',
-      group: 'sparks',
       type: 'line',
       height: 80,
       sparkline: {
