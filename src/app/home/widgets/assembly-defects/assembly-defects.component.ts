@@ -80,11 +80,8 @@ export class AssemblyDefectsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {
-      if (filter.duration === null || filter.stage === 0) {
+      if (filter.product === 0 || filter.stage === 0) {
         return
-      } else {
-        if (this.chart !== null && this.chart !== undefined)
-        this.chart.destroy()
       }
       this._homeService.getAssemblyDefects(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
@@ -101,7 +98,15 @@ export class AssemblyDefectsComponent implements OnInit, AfterViewInit {
           }
         }
         this.optionsCircle4.series = percent;
-        this.chart = renderCharts("#assemblydefects", this.optionsCircle4);
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts("#assemblydefects", this.optionsCircle4);
+        } else {
+          this.chart.updateOptions(({
+            series: percent,
+            labels: result.assemblyNames,
+            tempSum: this.sum
+          }))
+        }
       });
     })
   }

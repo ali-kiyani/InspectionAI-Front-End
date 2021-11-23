@@ -30,8 +30,8 @@ export class TopDefectsComponent extends AppComponentBase implements OnInit {
         }
      }
     },
-    series: [21, 23, 19, 14],
-    labels: ['Clothing', 'Food Products', 'Electronics', 'Kitchen Utility'],
+    series: [],
+    labels: [],
     legend: {
       position: 'bottom',
     }
@@ -45,18 +45,21 @@ export class TopDefectsComponent extends AppComponentBase implements OnInit {
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {
-      if (filter.duration === null || filter.stage === 0) {
+      if (filter.product === 0 || filter.stage === 0) {
         return
-      } else {
-          if (this.chart !== null && this.chart !== undefined) {
-            this.chart.destroy()
-          }
       }
       this._homeService.getDefectiveRatio(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
         this.optionDonut.labels = result.names
         this.optionDonut.series = result.count
-        this.chart = renderCharts("#topdefects", this.optionDonut);
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts("#topdefects", this.optionDonut);
+        } else {
+          this.chart.updateOptions({
+            series: this.optionDonut.series,
+            labels: this.optionDonut.labels
+          })
+        }
       })
     })
   }

@@ -1,19 +1,104 @@
 ul.images {
-    margin: 0;
+    margin-top: 1%;
+    margin-left: 2%;
     padding: 0;
     white-space: nowrap;
-    width: 100%;
+    width: 95%;
     overflow-x: auto;
   }
   
   ul.images li {
     display: inline;
-    margin-left: 9px;
+    margin-left: 6px;
   }
 
   .scroll-img {
-      width: 300px;
+      width: 150px;
+      height: 120px;
   }
   img {
     border: 1px solid rgb(49, 49, 49);
   }
+
+  ::ng-deep .ngxImageZoomContainer > img{
+    max-height: 500px;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 1.5625rem;
+    text-align: center;
+  }
+  
+  .empty-state .illustration {
+    margin-bottom: 1.25rem;
+  }
+  
+  .empty-state.flexible {
+    height: auto;
+  }
+
+  .icon.xlarge svg,
+.illustration.xlarge svg {
+  width: 12.5rem;
+  height: 9.375rem;
+}
+
+.svg-primary {
+  fill: var(--primary);
+}
+
+.illustration.primary svg {
+  fill: var(--primary);
+}
+.illustration.primary svg .colored {
+  fill: var(--primary);
+}
+
+.illustration svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.illustration.primary svg {
+  fill: var(--primary);
+}
+.icon.xlarge svg,
+.illustration.xlarge svg {
+  width: 12.5rem;
+  height: 9.375rem;
+}
+
+.text-muted {
+  color: #6c757d !important;
+  margin-top: 1%;
+}
+
+.icon.xxlarge svg,
+.illustration.xxlarge svg {
+  width: 18.75rem;
+  height: 16.625rem;
+}
+
+.details {
+  text-align: center;
+  margin-top: 8.125rem;
+  border: 1px solid #b7b7b7;
+    background-color: #f1f1f1;
+}
+
+
+.text-center-v {
+  text-align: center;
+  margin-top: 0.4rem;
+  border: 1px solid #b7b7b7;
+  background-color: #f1f1f1;
+}
+
+.ng-select {
+  padding-bottom: 0.5em;
+}

@@ -78,12 +78,8 @@ export class DefectsTrendComponent implements OnInit, AfterViewChecked {
   }
   ngAfterViewInit(): void {
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {
-      if (filter.duration === null || filter.stage === 0) {
+      if (filter.product === 0 || filter.stage === 0) {
         return
-      } else {
-        if (this.chart !== null && this.chart !== undefined) {
-          this.chart.destroy()
-        }
       }
       this._homeService.getDefectTrend(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
@@ -91,7 +87,33 @@ export class DefectsTrendComponent implements OnInit, AfterViewChecked {
         this.optionsArea.series.push({name: 'All', data: result.all})
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))
         this.optionsArea.xaxis.categories = result.labels
-        this.chart = renderCharts("#defectstrend", this.optionsArea);
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts("#defectstrend", this.optionsArea);
+        } else {
+          this.chart.updateOptions({
+            xaxis: {
+              categories: result.labels,
+              labels: {
+                formatter: function (value: Date, timestamp) {
+                  if (value) {
+                    return moment(value).format('DD-MM-YY')
+                  }
+                }, 
+              },
+              title: {
+                text: 'Duration',
+                style: {
+                  color: '#4f4f4f',
+                  fontSize: '13px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
+                  fontWeight: 600,
+                  cssClass: 'apexcharts-xaxis-title',
+                }
+              }
+            },
+            series: this.optionsArea.series
+          })
+        }
         this.optionsArea.series.forEach(x => {
           if (x.name !== 'All') {
             //chart.toggleSeries(x.name)

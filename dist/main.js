@@ -145,7 +145,6 @@ var AppInitializer = /** @class */ (function () {
         })
             .subscribe(function (response) {
             var result = response.result;
-            debugger;
             (0,lodash_es__WEBPACK_IMPORTED_MODULE_6__.default)(abp, result);
             abp.clock.provider = _this.getCurrentClockProvider(result.clock.provider);
             moment_timezone__WEBPACK_IMPORTED_MODULE_0__.locale(abp.localization.currentLanguage.name);

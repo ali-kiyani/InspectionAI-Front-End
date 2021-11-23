@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataSharingServiceProxies } from '@shared/service-proxies/data-sharing-service-proxies';
 import { OverviewDashboardServiceProxy } from '@shared/service-proxies/service-proxies';
 
@@ -9,7 +9,7 @@ declare function renderCharts(selector, options);
   templateUrl: './defective-products.component.html',
   styleUrls: ['./defective-products.component.css']
 })
-export class DefectiveProductsComponent implements OnInit {
+export class DefectiveProductsComponent implements OnInit, OnDestroy {
 
   optionDonut = {
     chart: {
@@ -56,20 +56,28 @@ export class DefectiveProductsComponent implements OnInit {
 
   constructor(private _dataSharingSerivce: DataSharingServiceProxies, private _homeService: OverviewDashboardServiceProxy) { }
 
+  ngOnDestroy(): void {
+    debugger
+    if (this.chart !== null && this.chart !== undefined) {
+      this.chart.destroy()
+    }
+  }
+
   ngOnInit(): void {
     this._dataSharingSerivce.filterOverviewDashboard.subscribe(filter => {
-      if (filter.duration === null) {
-        return
-      } else {
-          if (this.chart !== null && this.chart !== undefined) {
-            this.chart.destroy()
-          }
-      }
+
       this._homeService.getDefectiveProducts(filter.duration)
       .subscribe(result => {
         this.optionDonut.labels = result.names
         this.optionDonut.series = result.count
-        this.chart = renderCharts('#defectiveproducts', this.optionDonut);
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts('#defectiveproducts', this.optionDonut);
+        } else {
+          this.chart.updateOptions({
+            series: result.count,
+            labels: result.names
+          })
+        }
       })
     })
 

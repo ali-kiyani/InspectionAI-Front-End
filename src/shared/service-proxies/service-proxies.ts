@@ -155,8 +155,8 @@ export class AssemblyDetectionServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    addNewDetection(body: AssemblyDetectionDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/AddNewDetection";
+    addAssemblyDetection(body: AssemblyDetectionDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AssemblyDetection/AddAssemblyDetection";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -171,11 +171,11 @@ export class AssemblyDetectionServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddNewDetection(response_);
+            return this.processAddAssemblyDetection(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAddNewDetection(<any>response_);
+                    return this.processAddAssemblyDetection(<any>response_);
                 } catch (e) {
                     return <Observable<void>><any>_observableThrow(e);
                 }
@@ -184,7 +184,7 @@ export class AssemblyDetectionServiceProxy {
         }));
     }
 
-    protected processAddNewDetection(response: HttpResponseBase): Observable<void> {
+    protected processAddAssemblyDetection(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -208,7 +208,7 @@ export class AssemblyDetectionServiceProxy {
      * @return Success
      */
     addBulkDetections(body: AssemblyDetectionDto[] | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/AddBulkDetections";
+        let url_ = this.baseUrl + "/api/AssemblyDetection/AddBulkDetections";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -256,128 +256,11 @@ export class AssemblyDetectionServiceProxy {
     }
 
     /**
-     * @param id (optional) 
-     * @return Success
-     */
-    get(id: number | undefined): Observable<AssemblyDetectionDto> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/Get?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGet(<any>response_);
-                } catch (e) {
-                    return <Observable<AssemblyDetectionDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AssemblyDetectionDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGet(response: HttpResponseBase): Observable<AssemblyDetectionDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssemblyDetectionDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AssemblyDetectionDto>(<any>null);
-    }
-
-    /**
-     * @param skipCount (optional) 
-     * @param maxResultCount (optional) 
-     * @return Success
-     */
-    getAll(skipCount: number | undefined, maxResultCount: number | undefined): Observable<AssemblyDetectionDtoPagedResultDto> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/GetAll?";
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAll(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAll(<any>response_);
-                } catch (e) {
-                    return <Observable<AssemblyDetectionDtoPagedResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AssemblyDetectionDtoPagedResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAll(response: HttpResponseBase): Observable<AssemblyDetectionDtoPagedResultDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssemblyDetectionDtoPagedResultDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AssemblyDetectionDtoPagedResultDto>(<any>null);
-    }
-
-    /**
      * @param body (optional) 
      * @return Success
      */
-    create(body: CreateAssemblyDetectionDto | undefined): Observable<AssemblyDetectionDto> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/Create";
+    getDefectiveProducts(body: PagedAssemblyDetectionResutlRequestDto | undefined): Observable<DefectiveProductsResponsePagedResultDto> {
+        let url_ = this.baseUrl + "/api/AssemblyDetection/GetDefectiveProducts";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -393,20 +276,20 @@ export class AssemblyDetectionServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
+            return this.processGetDefectiveProducts(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreate(<any>response_);
+                    return this.processGetDefectiveProducts(<any>response_);
                 } catch (e) {
-                    return <Observable<AssemblyDetectionDto>><any>_observableThrow(e);
+                    return <Observable<DefectiveProductsResponsePagedResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<AssemblyDetectionDto>><any>_observableThrow(response_);
+                return <Observable<DefectiveProductsResponsePagedResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processCreate(response: HttpResponseBase): Observable<AssemblyDetectionDto> {
+    protected processGetDefectiveProducts(response: HttpResponseBase): Observable<DefectiveProductsResponsePagedResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -417,7 +300,7 @@ export class AssemblyDetectionServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssemblyDetectionDto.fromJS(resultData200);
+            result200 = DefectiveProductsResponsePagedResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -425,115 +308,7 @@ export class AssemblyDetectionServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<AssemblyDetectionDto>(<any>null);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    update(body: AssemblyDetectionDto | undefined): Observable<AssemblyDetectionDto> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<AssemblyDetectionDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AssemblyDetectionDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<AssemblyDetectionDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssemblyDetectionDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AssemblyDetectionDto>(<any>null);
-    }
-
-    /**
-     * @param id (optional) 
-     * @return Success
-     */
-    delete(id: number | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/AssemblyDetection/Delete?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(<any>response_);
-                } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<void>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(<any>null);
+        return _observableOf<DefectiveProductsResponsePagedResultDto>(<any>null);
     }
 }
 
@@ -1424,6 +1199,57 @@ export class ProductServiceProxy {
             }));
         }
         return _observableOf<ProductDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllProductsHeirarchy(): Observable<ProductHeirarchyDto> {
+        let url_ = this.baseUrl + "/api/services/app/Product/GetAllProductsHeirarchy";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllProductsHeirarchy(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllProductsHeirarchy(<any>response_);
+                } catch (e) {
+                    return <Observable<ProductHeirarchyDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ProductHeirarchyDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllProductsHeirarchy(response: HttpResponseBase): Observable<ProductHeirarchyDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProductHeirarchyDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ProductHeirarchyDto>(<any>null);
     }
 }
 
@@ -3431,11 +3257,11 @@ export interface IAssemblyDetectionDto {
     assemblyDefects: AssemblyDefectsDto[] | undefined;
 }
 
-export class AssemblyDetectionDtoPagedResultDto implements IAssemblyDetectionDtoPagedResultDto {
-    items: AssemblyDetectionDto[] | undefined;
-    totalCount: number;
+export class AssemblyLineIncDto implements IAssemblyLineIncDto {
+    name: string | undefined;
+    id: number;
 
-    constructor(data?: IAssemblyDetectionDtoPagedResultDto) {
+    constructor(data?: IAssemblyLineIncDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3446,44 +3272,36 @@ export class AssemblyDetectionDtoPagedResultDto implements IAssemblyDetectionDto
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items.push(AssemblyDetectionDto.fromJS(item));
-            }
-            this.totalCount = _data["totalCount"];
+            this.name = _data["name"];
+            this.id = _data["id"];
         }
     }
 
-    static fromJS(data: any): AssemblyDetectionDtoPagedResultDto {
+    static fromJS(data: any): AssemblyLineIncDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AssemblyDetectionDtoPagedResultDto();
+        let result = new AssemblyLineIncDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["totalCount"] = this.totalCount;
+        data["name"] = this.name;
+        data["id"] = this.id;
         return data; 
     }
 
-    clone(): AssemblyDetectionDtoPagedResultDto {
+    clone(): AssemblyLineIncDto {
         const json = this.toJSON();
-        let result = new AssemblyDetectionDtoPagedResultDto();
+        let result = new AssemblyLineIncDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IAssemblyDetectionDtoPagedResultDto {
-    items: AssemblyDetectionDto[] | undefined;
-    totalCount: number;
+export interface IAssemblyLineIncDto {
+    name: string | undefined;
+    id: number;
 }
 
 export class AuthenticateModel implements IAuthenticateModel {
@@ -3768,77 +3586,6 @@ export interface IChangeUserLanguageDto {
     languageName: string;
 }
 
-export class CreateAssemblyDetectionDto implements ICreateAssemblyDetectionDto {
-    assemblyLineId: number;
-    productId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    defectsCount: number;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-
-    constructor(data?: ICreateAssemblyDetectionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.assemblyLineId = _data["assemblyLineId"];
-            this.productId = _data["productId"];
-            this.stageId = _data["stageId"];
-            this.detectionTime = _data["detectionTime"] ? moment(_data["detectionTime"].toString()) : <any>undefined;
-            this.defectsCount = _data["defectsCount"];
-            if (Array.isArray(_data["assemblyDefects"])) {
-                this.assemblyDefects = [] as any;
-                for (let item of _data["assemblyDefects"])
-                    this.assemblyDefects.push(AssemblyDefectsDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateAssemblyDetectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateAssemblyDetectionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["assemblyLineId"] = this.assemblyLineId;
-        data["productId"] = this.productId;
-        data["stageId"] = this.stageId;
-        data["detectionTime"] = this.detectionTime ? this.detectionTime.toISOString() : <any>undefined;
-        data["defectsCount"] = this.defectsCount;
-        if (Array.isArray(this.assemblyDefects)) {
-            data["assemblyDefects"] = [];
-            for (let item of this.assemblyDefects)
-                data["assemblyDefects"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): CreateAssemblyDetectionDto {
-        const json = this.toJSON();
-        let result = new CreateAssemblyDetectionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateAssemblyDetectionDto {
-    assemblyLineId: number;
-    productId: number;
-    stageId: number;
-    detectionTime: moment.Moment;
-    defectsCount: number;
-    assemblyDefects: AssemblyDefectsDto[] | undefined;
-}
-
 export class CreateRoleDto implements ICreateRoleDto {
     name: string;
     displayName: string;
@@ -4038,6 +3785,171 @@ export interface ICreateUserDto {
     isActive: boolean;
     roleNames: string[] | undefined;
     password: string;
+}
+
+export class DefectiveProductsResponse implements IDefectiveProductsResponse {
+    imageUrl: string | undefined;
+    dateTime: moment.Moment;
+    assemblyDetectionId: number;
+    defectNames: string[] | undefined;
+
+    constructor(data?: IDefectiveProductsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.imageUrl = _data["imageUrl"];
+            this.dateTime = _data["dateTime"] ? moment(_data["dateTime"].toString()) : <any>undefined;
+            this.assemblyDetectionId = _data["assemblyDetectionId"];
+            if (Array.isArray(_data["defectNames"])) {
+                this.defectNames = [] as any;
+                for (let item of _data["defectNames"])
+                    this.defectNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DefectiveProductsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DefectiveProductsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["imageUrl"] = this.imageUrl;
+        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>undefined;
+        data["assemblyDetectionId"] = this.assemblyDetectionId;
+        if (Array.isArray(this.defectNames)) {
+            data["defectNames"] = [];
+            for (let item of this.defectNames)
+                data["defectNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): DefectiveProductsResponse {
+        const json = this.toJSON();
+        let result = new DefectiveProductsResponse();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDefectiveProductsResponse {
+    imageUrl: string | undefined;
+    dateTime: moment.Moment;
+    assemblyDetectionId: number;
+    defectNames: string[] | undefined;
+}
+
+export class DefectiveProductsResponsePagedResultDto implements IDefectiveProductsResponsePagedResultDto {
+    items: DefectiveProductsResponse[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IDefectiveProductsResponsePagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(DefectiveProductsResponse.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): DefectiveProductsResponsePagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DefectiveProductsResponsePagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): DefectiveProductsResponsePagedResultDto {
+        const json = this.toJSON();
+        let result = new DefectiveProductsResponsePagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDefectiveProductsResponsePagedResultDto {
+    items: DefectiveProductsResponse[] | undefined;
+    totalCount: number;
+}
+
+export class DefectsDto implements IDefectsDto {
+    id: number;
+    name: string | undefined;
+
+    constructor(data?: IDefectsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): DefectsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DefectsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): DefectsDto {
+        const json = this.toJSON();
+        let result = new DefectsDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDefectsDto {
+    id: number;
+    name: string | undefined;
 }
 
 export class DetailedAssemblyDefects implements IDetailedAssemblyDefects {
@@ -5517,6 +5429,77 @@ export interface IOverviewRevenueLossDto {
     data: OverviewRevenueLossDataDto[] | undefined;
 }
 
+export class PagedAssemblyDetectionResutlRequestDto implements IPagedAssemblyDetectionResutlRequestDto {
+    maxResultCount: number;
+    skipCount: number;
+    productId: number | undefined;
+    stageId: number | undefined;
+    assemblyLineId: number | undefined;
+    defectIds: number[] | undefined;
+
+    constructor(data?: IPagedAssemblyDetectionResutlRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.maxResultCount = _data["maxResultCount"];
+            this.skipCount = _data["skipCount"];
+            this.productId = _data["productId"];
+            this.stageId = _data["stageId"];
+            this.assemblyLineId = _data["assemblyLineId"];
+            if (Array.isArray(_data["defectIds"])) {
+                this.defectIds = [] as any;
+                for (let item of _data["defectIds"])
+                    this.defectIds.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedAssemblyDetectionResutlRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedAssemblyDetectionResutlRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        data["productId"] = this.productId;
+        data["stageId"] = this.stageId;
+        data["assemblyLineId"] = this.assemblyLineId;
+        if (Array.isArray(this.defectIds)) {
+            data["defectIds"] = [];
+            for (let item of this.defectIds)
+                data["defectIds"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): PagedAssemblyDetectionResutlRequestDto {
+        const json = this.toJSON();
+        let result = new PagedAssemblyDetectionResutlRequestDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedAssemblyDetectionResutlRequestDto {
+    maxResultCount: number;
+    skipCount: number;
+    productId: number | undefined;
+    stageId: number | undefined;
+    assemblyLineId: number | undefined;
+    defectIds: number[] | undefined;
+}
+
 export class PermissionDto implements IPermissionDto {
     id: number;
     name: string | undefined;
@@ -5719,6 +5702,120 @@ export class ProductDtoListResultDto implements IProductDtoListResultDto {
 
 export interface IProductDtoListResultDto {
     items: ProductDto[] | undefined;
+}
+
+export class ProductHeirarchyDto implements IProductHeirarchyDto {
+    products: ProductIncDto[] | undefined;
+
+    constructor(data?: IProductHeirarchyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["products"])) {
+                this.products = [] as any;
+                for (let item of _data["products"])
+                    this.products.push(ProductIncDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProductHeirarchyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductHeirarchyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.products)) {
+            data["products"] = [];
+            for (let item of this.products)
+                data["products"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): ProductHeirarchyDto {
+        const json = this.toJSON();
+        let result = new ProductHeirarchyDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IProductHeirarchyDto {
+    products: ProductIncDto[] | undefined;
+}
+
+export class ProductIncDto implements IProductIncDto {
+    productId: number;
+    name: string | undefined;
+    modelPath: string | undefined;
+    stages: StageIncDto[] | undefined;
+
+    constructor(data?: IProductIncDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productId = _data["productId"];
+            this.name = _data["name"];
+            this.modelPath = _data["modelPath"];
+            if (Array.isArray(_data["stages"])) {
+                this.stages = [] as any;
+                for (let item of _data["stages"])
+                    this.stages.push(StageIncDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProductIncDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductIncDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productId"] = this.productId;
+        data["name"] = this.name;
+        data["modelPath"] = this.modelPath;
+        if (Array.isArray(this.stages)) {
+            data["stages"] = [];
+            for (let item of this.stages)
+                data["stages"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): ProductIncDto {
+        const json = this.toJSON();
+        let result = new ProductIncDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IProductIncDto {
+    productId: number;
+    name: string | undefined;
+    modelPath: string | undefined;
+    stages: StageIncDto[] | undefined;
 }
 
 export class RegisterInput implements IRegisterInput {
@@ -6324,6 +6421,77 @@ export class StageDtoListResultDto implements IStageDtoListResultDto {
 
 export interface IStageDtoListResultDto {
     items: StageDto[] | undefined;
+}
+
+export class StageIncDto implements IStageIncDto {
+    stageId: number;
+    name: string | undefined;
+    defects: DefectsDto[] | undefined;
+    assemblyLines: AssemblyLineIncDto[] | undefined;
+
+    constructor(data?: IStageIncDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.stageId = _data["stageId"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["defects"])) {
+                this.defects = [] as any;
+                for (let item of _data["defects"])
+                    this.defects.push(DefectsDto.fromJS(item));
+            }
+            if (Array.isArray(_data["assemblyLines"])) {
+                this.assemblyLines = [] as any;
+                for (let item of _data["assemblyLines"])
+                    this.assemblyLines.push(AssemblyLineIncDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StageIncDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StageIncDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["stageId"] = this.stageId;
+        data["name"] = this.name;
+        if (Array.isArray(this.defects)) {
+            data["defects"] = [];
+            for (let item of this.defects)
+                data["defects"].push(item.toJSON());
+        }
+        if (Array.isArray(this.assemblyLines)) {
+            data["assemblyLines"] = [];
+            for (let item of this.assemblyLines)
+                data["assemblyLines"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StageIncDto {
+        const json = this.toJSON();
+        let result = new StageIncDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStageIncDto {
+    stageId: number;
+    name: string | undefined;
+    defects: DefectsDto[] | undefined;
+    assemblyLines: AssemblyLineIncDto[] | undefined;
 }
 
 export enum TenantAvailabilityState {

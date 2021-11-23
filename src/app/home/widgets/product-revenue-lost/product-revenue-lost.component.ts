@@ -73,20 +73,39 @@ export class ProductRevenueLostComponent implements OnInit {
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterOverviewDashboard.subscribe(filter => {
-      if (filter.duration === null) {
-        return
-      } else {
-          if (this.chart !== null && this.chart !== undefined) {
-            this.chart.destroy()
-          }
-      }
       this._homeService.getProductRevenueLoss(filter.duration)
       .subscribe(result => {
         this.optionsArea.xaxis.categories = result.labels
         this.optionsArea.series = []
         this.optionsArea.series.push({name: 'All', data: result.all})
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))
-        this.chart = renderCharts('#productrevenuelost', this.optionsArea)
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts('#productrevenuelost', this.optionsArea)
+        } else {
+          this.chart.updateOptions({
+            series: this.optionsArea.series,
+          xaxis: {
+            categories: this.optionsArea.xaxis.categories,
+            labels: {
+              formatter: function (value: Date, timestamp) {
+                if (value) {
+                  return moment(value).format('DD-MM-YY')
+                }
+              }, 
+            },
+            title: {
+              text: 'Duration',
+              style: {
+                color: '#4f4f4f',
+                fontSize: '13px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 600,
+                cssClass: 'apexcharts-xaxis-title',
+              }
+            }
+          }
+          })
+        }
         this.optionsArea.series.forEach(x => {
           if (x.name !== 'All') {
             //chart.hideSeries(x.name)

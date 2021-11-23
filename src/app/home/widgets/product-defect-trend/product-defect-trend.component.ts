@@ -23,19 +23,7 @@ export class ProductDefectTrendComponent implements OnInit {
     },
     series: [{
       name: "All",
-      data: [1567, 1412, 1345, 1167, 1478, 1599, 1665]
-    },
-    {
-      name: "Axel",
-      data: [566, 789, 245, 356, 490, 350, 278]
-    },
-    {
-      name: "Shock Absorber",
-      data: [398, 532, 456, 578, 634, 713, 760]
-    },
-    {
-      name: "Seal",
-      data: [603, 91, 644, 233, 354, 536, 627]
+      data: []
     }
   ],
     xaxis: {
@@ -85,20 +73,39 @@ export class ProductDefectTrendComponent implements OnInit {
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterOverviewDashboard.subscribe(filter => {
-      if (filter.duration === null) {
-        return
-      } else {
-        if (this.chart !== null && this.chart !== undefined) {
-          this.chart.destroy()
-        }
-      }
       this._homeService.getProductDefectTrend(filter.duration)
       .subscribe(result => {
         this.optionsArea.series = []
         this.optionsArea.series.push({name: 'All', data: result.all})
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))
         this.optionsArea.xaxis.categories = result.labels
-        this.chart = renderCharts('#productdefecttrend', this.optionsArea)
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts('#productdefecttrend', this.optionsArea)
+        } else {
+          this.chart.updateOptions({
+            xaxis: {
+              categories: result.labels,
+              labels: {
+                formatter: function (value: Date, timestamp) {
+                  if (value) {
+                    return moment(value).format('DD-MM-YY')
+                  }
+                }, 
+              },
+              title: {
+                text: 'Duration',
+                style: {
+                  color: '#4f4f4f',
+                  fontSize: '13px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
+                  fontWeight: 600,
+                  cssClass: 'apexcharts-xaxis-title',
+                }
+              }
+            },
+            series: this.optionsArea.series
+          })
+        }
         this.optionsArea.series.forEach(x => {
           if (x.name !== 'All') {
             //chart.toggleSeries(x.name)

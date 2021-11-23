@@ -129,6 +129,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
+              "src/assets/cloud-cross.svg",
               {
                 "glob": "abp.signalr.js",
                 "input": "node_modules/abp-web-resources/Abp/Framework/scripts/libs",

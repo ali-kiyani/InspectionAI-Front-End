@@ -135,7 +135,6 @@ export class AppInitializer {
       )
       .subscribe((response) => {
         const result = response.result;
-debugger
         _merge(abp, result);
 
         abp.clock.provider = this.getCurrentClockProvider(

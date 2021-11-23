@@ -46,20 +46,22 @@ export class ProductDefectsComponent extends AppComponentBase implements OnInit 
 
   ngOnInit(): void {
     this._dataSharingSerivce.filterOverviewDashboard.subscribe(filter => {
-      if (filter.duration === null) {
-        return
-      } else {
-          if (this.chart !== null && this.chart !== undefined) {
-            this.chart.destroy()
-          }
-      }
       this._homeService.getProductDefectRatio(filter.duration)
       .subscribe(result => {
         this.optionsBar.xaxis.categories = result.name
         this.optionsBar.series = []
         this.optionsBar.series.push({name: 'GOOD', data: result.good})
         this.optionsBar.series.push({name: 'Defective', data: result.defects})
+        if (this.chart === null || this.chart === undefined) {
         this.chart = renderCharts("#productsdefect", this.optionsBar);
+        } else {
+          this.chart.updateOptions({
+            series: this.optionsBar.series,
+            xaxis: {
+              categories: this.optionsBar.xaxis.categories,
+            }
+          })
+        }
       })
     })
 }

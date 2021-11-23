@@ -136,7 +136,6 @@ export class TimerComponent extends AppComponentBase implements OnInit {
   }
 
   getRefreshTime() {
-    debugger
     const interval = abp.setting.get('Abp.Localization.RefreshInterval');
     if (interval) {
       this.data.snoozeIntervalMin = parseInt(interval);

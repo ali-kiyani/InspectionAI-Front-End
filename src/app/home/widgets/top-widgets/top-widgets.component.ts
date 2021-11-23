@@ -192,14 +192,8 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
     this.insights.totalDetections = 0;
     this.insights.totalGood = 0;
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {
-      if (filter.duration === null || filter.stage === 0) {
+      if (filter.product === 0 || filter.stage === 0) {
         return
-      } else {
-          if (this.chart1 !== null && this.chart1 !== undefined) {
-            this.chart1.destroy()
-            this.chart2.destroy()
-            this.chart3.destroy()
-          }
       }
       this._homeService.getGeneralInsights(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
@@ -213,9 +207,24 @@ export class TopWidgetsComponent extends AppComponentBase implements OnInit, Aft
         this.spark1.series[0].data = result.detections
         this.spark2.series[0].data = result.good
         this.spark3.series[0].data = result.defects
-        this.chart1= renderCharts("#spark1", this.spark1);
-        this.chart2= renderCharts("#spark2", this.spark2);
-        this.chart3= renderCharts("#spark3", this.spark3);
+        if (this.chart1 === null || this.chart1 === undefined) {
+          this.chart1= renderCharts("#spark1", this.spark1);
+          this.chart2= renderCharts("#spark2", this.spark2);
+          this.chart3= renderCharts("#spark3", this.spark3);
+        } else {
+          this.chart1.updateOptions({
+            series: [{data: this.spark1.series[0].data}],
+            labels: this.spark1.labels
+          })
+          this.chart2.updateOptions({
+            series: [{data: this.spark2.series[0].data}],
+            labels: this.spark2.labels
+          })
+          this.chart3.updateOptions({
+            series: [{data: this.spark3.series[0].data}],
+            labels: this.spark3.labels
+          })
+        }
         this.loaded = true
       })
 

@@ -25,12 +25,7 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
       width: 3
     },
     //colors: ["#3F51B5", '#2196F3'],
-    series: [
-      {
-        name: "All",
-        data: []
-      }
-    ],
+    
     markers: {
       size: 4,
       strokeWidth: 0,
@@ -44,6 +39,12 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
         bottom: 0
       }
     },
+    series: [
+      {
+        name: "All",
+        data: []
+      }
+    ],
     xaxis: {
       tooltip: {
         enabled: false
@@ -90,12 +91,8 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this._dataSharingSerivce.filterDetailedDashboard.subscribe(filter => {
-      if (filter.duration === null || filter.stage === 0) {
+      if (filter.product === 0 || filter.stage === 0) {
         return
-      } else {
-          if (this.chart !== null && this.chart !== undefined) {
-            this.chart.destroy()
-          }
       }
       this._homeService.getRevenueLoss(filter.duration, filter.product, filter.stage)
       .subscribe(result => {
@@ -103,7 +100,36 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
         this.optionsLine.series = []
         this.optionsLine.series.push({name: 'All', data: result.all})
         result.data.forEach(x => this.optionsLine.series.push({name: x.name, data: x.data}))
-        this.chart = renderCharts("#revenuelost", this.optionsLine);
+        if (this.chart === null || this.chart === undefined) {
+          this.chart = renderCharts("#revenuelost", this.optionsLine);
+        } else {
+          this.chart.updateOptions({
+            series: this.optionsLine.series,
+            xaxis: {
+              tooltip: {
+                enabled: false
+              },
+              categories: this.optionsLine.xaxis.categories,
+              labels: {
+                formatter: function (value: any, timestamp) {
+                  if (value) {
+                    return moment(value).format('DD-MM-YY')
+                  }
+                }, 
+              },
+              title: {
+                text: 'Duration',
+                style: {
+                  color: '#4f4f4f',
+                  fontSize: '13px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
+                  fontWeight: 600,
+                  cssClass: 'apexcharts-xaxis-title',
+                }
+              }
+            }
+          })
+        }
         this.optionsLine.series.forEach(x => {
           if (x.name !== 'All') {
             //chart.hideSeries(x.name)
