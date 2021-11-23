@@ -48,7 +48,7 @@ export class ProductRevenueLostComponent implements OnInit {
     },
     yaxis: {
       title: {
-        text: 'Loss x100',
+        text: 'Loss x100 Rs.',
         style: {
           color: '#4f4f4f',
           fontSize: '13px',
@@ -77,7 +77,11 @@ export class ProductRevenueLostComponent implements OnInit {
       .subscribe(result => {
         this.optionsArea.xaxis.categories = result.labels
         this.optionsArea.series = []
+        result.all.forEach(x => x = x / 100)
         this.optionsArea.series.push({name: 'All', data: result.all})
+        for (let i = 0; result.data.length; i++) {
+          result.data[i].data.forEach(x => x = x / 100)
+        }
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))
         if (this.chart === null || this.chart === undefined) {
           this.chart = renderCharts('#productrevenuelost', this.optionsArea)

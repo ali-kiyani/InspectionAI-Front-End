@@ -70,7 +70,7 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Loss x100',
+        text: 'Loss x100 Rs.',
         style: {
           color: '#4f4f4f',
           fontSize: '13px',
@@ -98,7 +98,11 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
       .subscribe(result => {
         this.optionsLine.xaxis.categories = result.labels
         this.optionsLine.series = []
+        result.all.forEach(x => x = x / 100)
         this.optionsLine.series.push({name: 'All', data: result.all})
+        for (let i = 0; result.data.length; i++) {
+          result.data[i].data.forEach(x => x = x / 100)
+        }
         result.data.forEach(x => this.optionsLine.series.push({name: x.name, data: x.data}))
         if (this.chart === null || this.chart === undefined) {
           this.chart = renderCharts("#revenuelost", this.optionsLine);
