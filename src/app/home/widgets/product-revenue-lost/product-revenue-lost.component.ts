@@ -79,7 +79,7 @@ export class ProductRevenueLostComponent implements OnInit {
         this.optionsArea.series = []
         result.all.forEach(x => x = x / 100)
         this.optionsArea.series.push({name: 'All', data: result.all})
-        for (let i = 0; result.data.length; i++) {
+        for (let i = 0; i < result.data.length; i++) {
           result.data[i].data.forEach(x => x = x / 100)
         }
         result.data.forEach(x => this.optionsArea.series.push({name: x.name, data: x.data}))

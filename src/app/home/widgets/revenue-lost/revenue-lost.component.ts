@@ -100,7 +100,7 @@ export class RevenueLostComponent implements OnInit, AfterViewInit {
         this.optionsLine.series = []
         result.all.forEach(x => x = x / 100)
         this.optionsLine.series.push({name: 'All', data: result.all})
-        for (let i = 0; result.data.length; i++) {
+        for (let i = 0; i < result.data.length; i++) {
           result.data[i].data.forEach(x => x = x / 100)
         }
         result.data.forEach(x => this.optionsLine.series.push({name: x.name, data: x.data}))
