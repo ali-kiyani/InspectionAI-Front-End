@@ -40,9 +40,6 @@ export class DefectsComponent extends PagedListingComponentBase<AssemblyDetectio
     this.assemblyDetection.productId = 0
     this.assemblyDetection.stageId = 0
     this.selectedDefect = 0
-    AWS.config.update({
-      accessKeyId: "AKIATOIU7PIWHNLCGDIY", secretAccessKey: "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"
-    });
 
     this._productService.getAllProductsHeirarchy()
     .subscribe(result => {
